@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Gaukhar Kashaganova](https://up.htmlacademy.ru/ecmascript/14/user/1605855).
-* Наставник: `Неизвестно`.
+* Наставник: `Светлана Блинова`.
 
 ---
 
