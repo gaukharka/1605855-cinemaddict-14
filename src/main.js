@@ -30,7 +30,7 @@ const headerElement = document.querySelector('.header');
 const mainElement = document.querySelector('.main');
 const footerElement = document.querySelector('.footer');
 
-// render(bodyElement, createPopupTemplate(), 'beforeend');
+render(bodyElement, createPopupTemplate(), 'beforeend');
 render(headerElement, createUserRankTemplate(), 'beforeend');
 render(mainElement, createSiteMenuTemplate(), 'beforeend');
 render(mainElement, createFilmSortingElement(), 'beforeend');
