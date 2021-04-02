@@ -4,12 +4,13 @@ import {createAllFilmsTemplate} from './view/films.js';
 import {createAllFilmsListTemplate} from './view/films-list.js';
 import {createFilmCardTemplate} from './view/film-card.js';
 import {createFilmSortingElement} from './view/film-sorting';
-import {createStatsTemplate} from './view/stats.js';
+// import {createStatsTemplate} from './view/stats.js';
 import {createFooterStatsTemplate} from './view/footer-stats.js';
 import {createLoadMoreButton} from './view/load-more-button.js';
 import {createToRatedFilmsTemplate} from './view/top-rated-films.js';
 import {createMostCommentedFilmsTemplate} from './view/most-commented-films.js';
 import {createPopupTemplate} from './view/popup.js';
+import './mock/film.js';
 
 
 const MAX_CARD_COUNT = 5;
@@ -34,7 +35,7 @@ render(bodyElement, createPopupTemplate(), 'beforeend');
 render(headerElement, createUserRankTemplate(), 'beforeend');
 render(mainElement, createSiteMenuTemplate(), 'beforeend');
 render(mainElement, createFilmSortingElement(), 'beforeend');
-render(mainElement, createStatsTemplate(), 'beforeend');
+// render(mainElement, createStatsTemplate(), 'beforeend');
 render(mainElement, createAllFilmsTemplate(), 'beforeend');
 
 const allFilms = mainElement.querySelector('.films');
