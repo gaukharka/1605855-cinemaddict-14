@@ -7,23 +7,22 @@ import {createFilmSortingElement} from './view/film-sorting';
 // import {createStatsTemplate} from './view/stats.js';
 import {createFooterStatsTemplate} from './view/footer-stats.js';
 import {createLoadMoreButton} from './view/load-more-button.js';
-import {createToRatedFilmsTemplate} from './view/top-rated-films.js';
+import {createTopRatedFilmsTemplate} from './view/top-rated-films.js';
 import {createMostCommentedFilmsTemplate} from './view/most-commented-films.js';
-import {createPopupTemplate} from './view/popup.js';
-import './mock/film.js';
+import {createPopupTemplate, createGenresTemplate, createCommentTemplate} from './view/popup.js';
+import {generateFilmCard, generateFilmPopup} from './mock/film.js';
 
+// generateFilmPopup
 
 const MAX_CARD_COUNT = 5;
 const MIN_CARD_COUNT = 2;
+const POPUP_COUNT = 1;
+
+const film = new Array(MAX_CARD_COUNT).fill().map(generateFilmCard);
+const filmInfo = new Array(POPUP_COUNT).fill().map(generateFilmPopup);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
-};
-
-const renderAllFilms = (container, template, place, count) => {
-  for(let i=0; i<count; i++){
-    container.insertAdjacentHTML(place, template);
-  }
 };
 
 const bodyElement = document.querySelector('body');
@@ -31,7 +30,10 @@ const headerElement = document.querySelector('.header');
 const mainElement = document.querySelector('.main');
 const footerElement = document.querySelector('.footer');
 
-render(bodyElement, createPopupTemplate(), 'beforeend');
+for(let i=0; i<1; i++){
+  render(bodyElement, createPopupTemplate(filmInfo[i]), 'beforeend');
+}
+
 render(headerElement, createUserRankTemplate(), 'beforeend');
 render(mainElement, createSiteMenuTemplate(), 'beforeend');
 render(mainElement, createFilmSortingElement(), 'beforeend');
@@ -45,19 +47,51 @@ render(allFilms, createAllFilmsListTemplate(), 'beforeend');
 const allFilmsList = allFilms.querySelector('.films-list');
 const allFilmsListContainer = allFilmsList.querySelector('.films-list__container');
 
-renderAllFilms(allFilmsListContainer, createFilmCardTemplate(), 'beforeend', MAX_CARD_COUNT);
+for(let i=0; i< MAX_CARD_COUNT; i++){
+  render(allFilmsListContainer, createFilmCardTemplate(film[i]), 'beforeend');
+}
+
 render(allFilmsList, createLoadMoreButton(), 'beforeend');
-render(allFilms, createToRatedFilmsTemplate(), 'beforeend');
+
+// Genre container
+const filmDetails = bodyElement.querySelector('.film-details');
+const filmDetailsTopContainer = filmDetails.querySelector('.film-details__top-container');
+const filmTable = filmDetailsTopContainer.querySelector('.film-details__table');
+const filmDetailsRow = filmTable.querySelector('.film-details__cell-genre');
+
+const genre = new Array(5).fill().map(createGenresTemplate);
+
+for(let i=0; i<5; i++){
+  render(filmDetailsRow, createGenresTemplate(genre[i], 'beforeend'));
+}
+
+// Comments container
+const filmDetailsBottomContainer = filmDetails.querySelector('.film-details__bottom-container');
+const commentsList = filmDetailsBottomContainer.querySelector('.film-details__comments-list');
+
+const comment = new Array(4).fill().map(createCommentTemplate);
+
+for(let i=0; i< MAX_CARD_COUNT; i++){
+  render(commentsList, createCommentTemplate(comment[i]), 'beforeend');
+}
+
+// Top films
+render(allFilms, createTopRatedFilmsTemplate(), 'beforeend');
 
 const topFilms = allFilms.querySelector('.films-list--top');
 const topFilmsContainer = topFilms.querySelector('.films-list__container');
 
-renderAllFilms(topFilmsContainer, createFilmCardTemplate(), 'beforeend', MIN_CARD_COUNT);
+for(let i; i< MIN_CARD_COUNT; i++){
+  render(topFilmsContainer, createFilmCardTemplate(film[i]), 'beforeend');
+}
+
+// Most commented films
 render(allFilms, createMostCommentedFilmsTemplate(), 'beforeend');
 
 const mostCommentedFilms = allFilms.querySelector('.films-list--popular');
 const mostCommentedFilmsContainer = mostCommentedFilms.querySelector('.films-list__container');
 
-renderAllFilms(mostCommentedFilmsContainer, createFilmCardTemplate(), 'beforeend', MIN_CARD_COUNT);
-
+for(let i; i< MIN_CARD_COUNT; i++){
+  render(mostCommentedFilmsContainer, createFilmCardTemplate(film[i]), 'beforeend');
+}
 render(footerElement, createFooterStatsTemplate(), 'beforeend');

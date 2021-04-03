@@ -5,7 +5,12 @@ const getRandomNumber = (min, max) => {
 };
 
 const shuffle = (array) => {
-  array.sort(() => Math.random() - 0.5);
+  // array.sort(() => Math.random() - 0.5);
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 };
 
 const MIN_RATING = 1;
@@ -29,6 +34,14 @@ const RELEASE_YEAR = [
   '2000',
 ];
 
+const RELEASE_DATE = [
+  '26 Apr 1930',
+  '05 Aug 2007',
+  '31 Dec 2010',
+  '01 Jun 1980',
+  '01 Mar 2000',
+];
+
 const RUNTIME = [
   '1h 30m',
   '2h 10m',
@@ -37,26 +50,21 @@ const RUNTIME = [
   '1h 30m',
 ];
 
-const generateValue = (array) => {
-  const randomIndex = getRandomNumber(0, 5);
-  return array[randomIndex];
-};
-
 const POSTERS = [
-  '/public/images/posters/made-for-each-other.png',
-  '/public/images/posters/popeye-meets-sinbad.png',
-  '/public/images/posters/santa-claus-conquers-the-martians.jpg',
-  '/public/images/posters/the-dance-of-life.jpg',
-  '/public/images/posters/the-great-flamarion.jpg',
-  '/public/images/posters/the-man-with-the-golden-arm.jpg',
+  './images/posters/made-for-each-other.png',
+  './images/posters/popeye-meets-sinbad.png',
+  './images/posters/santa-claus-conquers-the-martians.jpg',
+  './images/posters/the-dance-of-life.jpg',
+  './images/posters/the-great-flamarion.jpg',
+  './images/posters/the-man-with-the-golden-arm.jpg',
 ];
 
-// const generate
-// const POSTER = {
-//   poster_1: `/public/images/posters/made-for-each-other.png`,
-//   poster_2: `/public/images/posters/popeye-meets-sinbad.png`,
-//   poster_3
-// };
+const EMOJI = [
+  './images/emoji/smile.png',
+  './images/emoji/sleeping.png',
+  './images/emoji/puke.png',
+  './images/emoji/angry.png',
+];
 
 const GENRE = [
   'Comedy',
@@ -67,16 +75,6 @@ const GENRE = [
   'Horror',
   'Romance',
   'Western',
-];
-
-const ACTORS = [
-  'Erich von Stroheim',
-  'Mary Beth Hughes',
-  'Dan Duryea',
-  'Johnny Depp',
-  'John Travolta',
-  'Bradlay Cooper',
-  'Lili Reinhart',
 ];
 
 const DESCRIPTION = [
@@ -93,56 +91,149 @@ const DESCRIPTION = [
   'In rutrum ac purus sit amet tempus.',
 ];
 
-//POSTER
-const generatePoster = () => {
-  const randomIndex = getRandomNumber(0, 5);
+const ACTORS = [
+  'Erich von Stroheim',
+  'Mary Beth Hughes',
+  'Dan Duryea',
+  'Johnny Depp',
+  'John Travolta',
+  'Bradlay Cooper',
+  'Lili Reinhart',
+];
 
-  return poster[randomIndex];
+const DIRECTORS = [
+  'Steven Spielberg',
+  'Jordan Alan',
+  'Wyatt Bardouille',
+  'Richard Foster Baker',
+  'Carroll Ballard',
+  'Bradley Barker',
+  'Marilyn Agrelo',
+  'Jane Anderson',
+  'Yvonne Andersen',
+];
+
+const WRITERS = [
+  'Robert Towne',
+  'Ethan Coen',
+  'Joel Coen',
+  'Francis Ford Coppola',
+  'Charlie Kaufman',
+  'Woody Allen',
+  'Ernest Lehman',
+  'Oliver Stone',
+  'Spike Lee',
+  'Preston Sturges',
+];
+
+const COUNTRY = [
+  'USA',
+  'Italy',
+  'Germany',
+  'France',
+  'Brasil',
+  'China',
+  'Japan',
+];
+
+const AGE_ALLOWANCE = [
+  '18+',
+  '16+',
+];
+
+const COMMENTS = [
+  'Interesting setting and a good cast',
+  'Booooooooooring',
+  'Very very old. Meh',
+  'Almost two hours? Seriously?',
+];
+
+const NAME = [
+  'Olya',
+  'John',
+  'Naima',
+  'Dina',
+  'Mila',
+  'Ivan',
+  'Anvar',
+];
+
+const generateDate = () => {
+  const date = new Date();
+  let month = '' + (date.getMonth() + 1);
+  let day = '' + date.getDate();
+  const year = date.getFullYear();
+  const time = date.toTimeString().replace(/.*(\d{2}:\d{2}).*/, '$1');
+
+  if(month.length < 2) {
+    month = '0' + month;
+  }
+  if(day.length < 2){
+    day = '0' + day;
+  }
+
+  return `${year}/${month}/${day} ${time}`;
 };
+
+
+const generateComment = () => {
+  return {
+    // id:  id,
+    author: NAME[getRandomNumber(0, NAME.lenght)],
+    comment: COMMENTS[getRandomNumber(0, COMMENTS.lenght)],
+    data: generateDate(),
+    emotion: EMOJI[getRandomNumber(0, EMOJI.lenght)],
+  };
+};
+
+// console.log(generateComment());
+
+// const generateComments = (id) => {
+//   const commentLength = getRandomNumber(1, 5);
+//   const comments = [];
+
+//   for (let i = 0; i < commentLength; i++) {
+//     comments.push(generateComment(id[i]));
+//   }
+//   return comments;
+// };
 
 // Genre, Actors
 const generateValues = (array) => {
-  shuffle(array);
+  const shuffledArray = shuffle(array);
   const arrayLength = getRandomNumber(1, 5);
   const result = [];
 
   for (let i = 0; i < arrayLength; i++) {
-    result.push(array[i]);
+    result.push(shuffledArray[i]);
   }
 
-  const genres = result.join(', ');
-  return genres;
+  const values = result.join(', ');
+  return values;
 };
 
 // Description
 const generateDescription = (array)=> {
-  shuffle(array);
+  const shuffledArray = shuffle(array);
   const descriptionLength = getRandomNumber(1, 5);
   const result = [];
 
   for (let i = 0; i < descriptionLength; i++) {
-    result.push(array[i]);
+    result.push(shuffledArray[i]);
   }
 
   const description = result.join(' ');
-
-  if(description.length >= 140) {
-    const trimmedDescription = description.substring(0, 139) + '...';
-    return trimmedDescription;
-  }
-
-  const fullDescription = description;
-  return fullDescription;
+  return description;
 };
 
 // Film Card
 const generateFilmCard = () => {
   return {
-    title: generateValue(TITLE),
-    runtime: generateValue(RUNTIME),
-    release: generateValue(RELEASE_YEAR),
+    title: TITLE[getRandomNumber(0, TITLE.length)],
+    runtime: RUNTIME[getRandomNumber(0, RUNTIME.length)],
+    release: RELEASE_YEAR[getRandomNumber(0, RELEASE_YEAR.length)],
+    poster: POSTERS[getRandomNumber(0, POSTERS.length)],
     genre: generateValues(GENRE),
-    poster: POSTERS[getRandomNumber(0, 6)],
     description: generateDescription(DESCRIPTION),
     rating: getRandomNumber(MIN_RATING, MAX_RATING),
     commentsCount: getRandomNumber(MIN_COMMENT_COUNT, MAX_COMMENT_COUNT),
@@ -150,27 +241,33 @@ const generateFilmCard = () => {
 };
 
 // Popup
-// const generateFilmPopup = () => {
-//   return {
-//     title: generateValue(title),
-//     alternativelTitle: generateValue(title),
-//     poster: generateLargePoster(),
-//     rating: generateRating(),
-//     director: generateDirector(),
-//     writers: generateWriters(),
-//     actors: generateValues(ACTORS),
-//     genre: generateValues(GENRE),
-//     fullDescription: generateDescription(),
-//     releaseDate: generateRelease(),
-//     runtime: generateRunTime(),
-//     country:
-//     ageAllowance:
+// const ids = [];
 
-//   };
-// };
+const generateFilmPopup = () => {
+  return {
+    // id: id,
+    title: TITLE[getRandomNumber(0, TITLE.length)],
+    runtime: RUNTIME[getRandomNumber(0, RUNTIME.length)],
+    alternativelTitle: TITLE[getRandomNumber(0, TITLE.length)],
+    rating: getRandomNumber(MIN_RATING, MAX_RATING),
+    poster: POSTERS[getRandomNumber(0, POSTERS.length)],
+    country: COUNTRY[getRandomNumber(0, COUNTRY.length)],
+    ageAllowance: AGE_ALLOWANCE[getRandomNumber(0, AGE_ALLOWANCE.length)],
+    genre: generateValues(GENRE),
+    director: generateValues(DIRECTORS),
+    writers: generateValues(WRITERS),
+    actors: generateValues(ACTORS),
+    comments: generateComment(),
+    description: generateDescription(),
+    releaseDate: RELEASE_DATE[getRandomNumber(0, RELEASE_DATE.length)],
+  };
+};
 
-// const myDate = new Date().toTimeString().replace(/.*(\d{2}):(\d{2}).*/, "$1h $2m");
-// console.log(myDate);
+export {generateFilmCard, generateFilmPopup};
 
 
-console.log(generateFilmCard());
+// let d = new Date(2010, 7, 5);
+// let ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
+// let mo = new Intl.DateTimeFormat('en', { month: 'short' }).format(d);
+// let da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(d);
+// console.log(`${da}-${mo}-${ye}`);
