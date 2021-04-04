@@ -1,18 +1,3 @@
-const getRandomNumber = (min, max) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
-const shuffle = (array) => {
-  // array.sort(() => Math.random() - 0.5);
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-};
-
 const MIN_RATING = 1;
 const MAX_RATING = 9;
 const MIN_COMMENT_COUNT = 0;
@@ -158,6 +143,16 @@ const NAME = [
   'Anvar',
 ];
 
+const getRandomNumber = (min, max) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+const shuffle = (array) => {
+  array.sort(() => Math.random() - 0.5);
+};
+
 const generateDate = () => {
   const date = new Date();
   let month = '' + (date.getMonth() + 1);
@@ -175,93 +170,84 @@ const generateDate = () => {
   return `${year}/${month}/${day} ${time}`;
 };
 
+const getRandomElement = (array) => {
+  return array[getRandomNumber(0, array.length-1)];
+};
 
-const generateComment = () => {
+const generateComment = (id) => {
   return {
-    // id:  id,
-    author: NAME[getRandomNumber(0, NAME.lenght)],
-    comment: COMMENTS[getRandomNumber(0, COMMENTS.lenght)],
+    id:  `comment${id}`,
+    author: `${getRandomElement(NAME)}`,
+    comment: `${getRandomElement(COMMENTS)}`,
     data: generateDate(),
-    emotion: EMOJI[getRandomNumber(0, EMOJI.lenght)],
+    emotion: `${getRandomElement(EMOJI)}`,
   };
 };
 
-// console.log(generateComment());
+console.log(generateComment());
 
-// const generateComments = (id) => {
-//   const commentLength = getRandomNumber(1, 5);
-//   const comments = [];
+const generateComments = (filmId) => {
+  const commentLength = getRandomNumber(1, 5);
+  const comments = [];
 
-//   for (let i = 0; i < commentLength; i++) {
-//     comments.push(generateComment(id[i]));
-//   }
-//   return comments;
-// };
+  for (let i = 0; i < commentLength; i++) {
+    comments.push(generateComment(`${filmId}${i}`));
+  }
+  return comments;
+};
 
-// Genre, Actors
 const generateValues = (array) => {
-  const shuffledArray = shuffle(array);
+  shuffle(array);
   const arrayLength = getRandomNumber(1, 5);
   const result = [];
 
   for (let i = 0; i < arrayLength; i++) {
-    result.push(shuffledArray[i]);
+    result.push(array[i]);
   }
 
   const values = result.join(', ');
   return values;
 };
 
-// Description
-const generateDescription = (array)=> {
-  const shuffledArray = shuffle(array);
-  const descriptionLength = getRandomNumber(1, 5);
-  const result = [];
-
-  for (let i = 0; i < descriptionLength; i++) {
-    result.push(shuffledArray[i]);
-  }
-
-  const description = result.join(' ');
-  return description;
-};
-
 // Film Card
 const generateFilmCard = () => {
   return {
-    title: TITLE[getRandomNumber(0, TITLE.length)],
-    runtime: RUNTIME[getRandomNumber(0, RUNTIME.length)],
-    release: RELEASE_YEAR[getRandomNumber(0, RELEASE_YEAR.length)],
-    poster: POSTERS[getRandomNumber(0, POSTERS.length)],
+    title: `${getRandomElement(TITLE)}`,
+    runtime: `${getRandomElement(RUNTIME)}`,
+    release: `${getRandomElement(RELEASE_YEAR)}`,
+    poster: `${getRandomElement(POSTERS)}`,
     genre: generateValues(GENRE),
-    description: generateDescription(DESCRIPTION),
+    description: generateValues(DESCRIPTION),
     rating: getRandomNumber(MIN_RATING, MAX_RATING),
     commentsCount: getRandomNumber(MIN_COMMENT_COUNT, MAX_COMMENT_COUNT),
   };
 };
 
 // Popup
-// const ids = [];
+let id = 0;
 
 const generateFilmPopup = () => {
+
   return {
-    // id: id,
-    title: TITLE[getRandomNumber(0, TITLE.length)],
-    runtime: RUNTIME[getRandomNumber(0, RUNTIME.length)],
-    alternativelTitle: TITLE[getRandomNumber(0, TITLE.length)],
+    id: id++,
+    title: `${getRandomElement(TITLE)}`,
+    runtime: `${getRandomElement(RUNTIME)}`,
+    alternativelTitle: `${getRandomElement(TITLE)}`,
     rating: getRandomNumber(MIN_RATING, MAX_RATING),
-    poster: POSTERS[getRandomNumber(0, POSTERS.length)],
-    country: COUNTRY[getRandomNumber(0, COUNTRY.length)],
-    ageAllowance: AGE_ALLOWANCE[getRandomNumber(0, AGE_ALLOWANCE.length)],
+    poster: `${getRandomElement(POSTERS)}`,
+    country: `${getRandomElement(COUNTRY)}`,
+    ageAllowance: `${getRandomElement(AGE_ALLOWANCE)}`,
+    releaseDate: `${getRandomElement(RELEASE_DATE)}`,
     genre: generateValues(GENRE),
     director: generateValues(DIRECTORS),
     writers: generateValues(WRITERS),
     actors: generateValues(ACTORS),
-    comments: generateComment(),
-    description: generateDescription(),
-    releaseDate: RELEASE_DATE[getRandomNumber(0, RELEASE_DATE.length)],
+    comments: generateComments(id),
+    description: generateValues(DESCRIPTION),
   };
 };
+
+console.log(generateFilmPopup());
 
 export {generateFilmCard, generateFilmPopup};
 
