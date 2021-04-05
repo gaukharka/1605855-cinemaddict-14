@@ -9,10 +9,8 @@ import {createFooterStatsTemplate} from './view/footer-stats.js';
 import {createLoadMoreButton} from './view/load-more-button.js';
 import {createTopRatedFilmsTemplate} from './view/top-rated-films.js';
 import {createMostCommentedFilmsTemplate} from './view/most-commented-films.js';
-import {createPopupTemplate, createGenresTemplate, createCommentTemplate} from './view/popup.js';
+import {createPopupTemplate, createCommentTemplate} from './view/popup.js';
 import {generateFilmCard, generateFilmPopup} from './mock/film.js';
-
-// generateFilmPopup
 
 const MAX_CARD_COUNT = 5;
 const MIN_CARD_COUNT = 2;
@@ -30,9 +28,9 @@ const headerElement = document.querySelector('.header');
 const mainElement = document.querySelector('.main');
 const footerElement = document.querySelector('.footer');
 
-for(let i=0; i<1; i++){
-  render(bodyElement, createPopupTemplate(filmInfo[i]), 'beforeEnd');
-}
+// for(let i=0; i<1; i++){
+//   render(bodyElement, createPopupTemplate(filmInfo[i]), 'beforeEnd');
+// }
 
 render(headerElement, createUserRankTemplate(), 'beforeEnd');
 render(mainElement, createSiteMenuTemplate(), 'beforeEnd');
@@ -53,33 +51,28 @@ for(let i=0; i< MAX_CARD_COUNT; i++){
 
 render(allFilmsList, createLoadMoreButton(), 'beforeEnd');
 
-// Genre container
-const filmDetails = bodyElement.querySelector('.film-details');
-const filmDetailsTopContainer = filmDetails.querySelector('.film-details__top-container');
-const filmTable = filmDetailsTopContainer.querySelector('.film-details__table');
-const filmDetailsRow = filmTable.querySelector('.film-details__cell-genre');
-
-const genre = new Array(5).fill().map(createGenresTemplate);
-
-for(let i=0; i<5; i++){
-  render(filmDetailsRow, createGenresTemplate(genre[i], 'beforeEnd'));
-}
-
 // Comments container
-const filmDetailsBottomContainer = filmDetails.querySelector('.film-details__bottom-container');
-const commentsList = filmDetailsBottomContainer.querySelector('.film-details__comments-list');
+// const filmDetails = bodyElement.querySelector('.film-details');
+// const filmDetailsBottomContainer = filmDetails.querySelector('.film-details__bottom-container');
+// const commentsList = filmDetailsBottomContainer.querySelector('.film-details__comments-list');
 
-const comment = new Array(4).fill().map(createCommentTemplate);
+// const comment = new Array(4).fill().map(createCommentTemplate);
 
-for(let i=0; i< MAX_CARD_COUNT; i++){
-  render(commentsList, createCommentTemplate(comment[i]), 'beforeEnd');
-}
+// for(let i=0; i< MAX_CARD_COUNT; i++){
+//   render(commentsList, createCommentTemplate(comment[i]), 'beforeEnd');
+// }
 
 // Top films
 render(allFilms, createTopRatedFilmsTemplate(), 'beforeEnd');
 
 const topFilms = allFilms.querySelector('.films-list--top');
 const topFilmsContainer = topFilms.querySelector('.films-list__container');
+
+const sortByMaxValue = (filmA, filmB) => {
+  const valueA = filmA.comments.length;
+  const valueB = filmB.comments.length;
+  return valueB - valueA;
+};
 
 for(let i; i< MIN_CARD_COUNT; i++){
   render(topFilmsContainer, createFilmCardTemplate(film[i]), 'beforeEnd');

@@ -7,6 +7,7 @@ const createFilmCardTemplate = (film) => {
   const {title, runtime, release, poster, genre, description, rating, commentsCount} = film;
   const filmDescription = isLong(description) === true ? description.substring(0, 139) + '...' : description;
 
+
   return `<article class="film-card">
   <h3 class="film-card__title">${title}</h3>
   <p class="film-card__rating">${rating}</p>

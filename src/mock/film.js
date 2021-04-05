@@ -174,29 +174,20 @@ const getRandomElement = (array) => {
   return array[getRandomNumber(0, array.length-1)];
 };
 
-const generateComment = (id) => {
-  return {
-    id:  `comment${id}`,
-    author: `${getRandomElement(NAME)}`,
-    comment: `${getRandomElement(COMMENTS)}`,
-    data: generateDate(),
-    emotion: `${getRandomElement(EMOJI)}`,
-  };
-};
-
-console.log(generateComment());
-
-const generateComments = (filmId) => {
-  const commentLength = getRandomNumber(1, 5);
-  const comments = [];
-
-  for (let i = 0; i < commentLength; i++) {
-    comments.push(generateComment(`${filmId}${i}`));
-  }
-  return comments;
-};
-
 const generateValues = (array) => {
+  shuffle(array);
+  const arrayLength = getRandomNumber(1, 5);
+  const result = [];
+
+  for (let i = 0; i < arrayLength; i++) {
+    result.push(array[i]);
+  }
+
+  const values = result.join(' ');
+  return values;
+};
+
+const generateArrays = (array) => {
   shuffle(array);
   const arrayLength = getRandomNumber(1, 5);
   const result = [];
@@ -209,25 +200,51 @@ const generateValues = (array) => {
   return values;
 };
 
-// Film Card
-const generateFilmCard = () => {
+const generateComment = (id) => {
   return {
+    id:  `comment${id}`,
+    author: `${getRandomElement(NAME)}`,
+    comment: `${getRandomElement(COMMENTS)}`,
+    data: generateDate(),
+    emotion: `${getRandomElement(EMOJI)}`,
+  };
+};
+
+const generateComments = (filmId) => {
+  const commentLength = getRandomNumber(1, 5);
+  const comments = [];
+
+  for (let i = 0; i < commentLength; i++) {
+    comments.push(generateComment(`${filmId}${i}`));
+  }
+  return comments;
+};
+
+console.log(generateComments());
+
+// Film Card
+const ids = [];
+
+const generateFilmCard = () => {
+  // return ids.map((id) => (
+  return  {
+    id: id,
     title: `${getRandomElement(TITLE)}`,
     runtime: `${getRandomElement(RUNTIME)}`,
     release: `${getRandomElement(RELEASE_YEAR)}`,
     poster: `${getRandomElement(POSTERS)}`,
-    genre: generateValues(GENRE),
+    genre: generateArrays(GENRE),
     description: generateValues(DESCRIPTION),
     rating: getRandomNumber(MIN_RATING, MAX_RATING),
     commentsCount: getRandomNumber(MIN_COMMENT_COUNT, MAX_COMMENT_COUNT),
   };
+// ));
 };
 
 // Popup
 let id = 0;
 
 const generateFilmPopup = () => {
-
   return {
     id: id++,
     title: `${getRandomElement(TITLE)}`,
@@ -238,10 +255,10 @@ const generateFilmPopup = () => {
     country: `${getRandomElement(COUNTRY)}`,
     ageAllowance: `${getRandomElement(AGE_ALLOWANCE)}`,
     releaseDate: `${getRandomElement(RELEASE_DATE)}`,
-    genre: generateValues(GENRE),
-    director: generateValues(DIRECTORS),
-    writers: generateValues(WRITERS),
-    actors: generateValues(ACTORS),
+    genre: generateArrays(GENRE),
+    director: generateArrays(DIRECTORS),
+    writers: generateArrays(WRITERS),
+    actors: generateArrays(ACTORS),
     comments: generateComments(id),
     description: generateValues(DESCRIPTION),
   };
