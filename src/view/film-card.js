@@ -1,4 +1,3 @@
-
 const isLong = (description) => {
   return description.length >=140 ? true : false;
 };

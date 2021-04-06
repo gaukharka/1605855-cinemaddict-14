@@ -11,28 +11,21 @@ const TITLE = [
   'Movie #5',
 ];
 
-const RELEASE_YEAR = [
-  '1930',
-  '2007',
-  '2010',
-  '1980',
-  '2000',
-];
-
 const RELEASE_DATE = [
-  '26 Apr 1930',
-  '05 Aug 2007',
-  '31 Dec 2010',
-  '01 Jun 1980',
-  '01 Mar 2000',
+  '2019-05-11T00:00:00.000Z',
+  '2000-02-11T00:00:00.000Z',
+  '1980-05-21T00:00:00.000Z',
+  '2009-12-05T00:00:00.000Z',
+  '2020-01-01T00:00:00.000Z',
+  '1980-03-28T00:00:00.000Z',
 ];
 
 const RUNTIME = [
-  '1h 30m',
-  '2h 10m',
-  '1h 45m',
-  '2h 20m',
-  '1h 30m',
+  '90',
+  '180',
+  '130',
+  '50',
+  '110',
 ];
 
 const POSTERS = [
@@ -153,7 +146,7 @@ const shuffle = (array) => {
   array.sort(() => Math.random() - 0.5);
 };
 
-const generateDate = () => {
+const generateCommentDate = () => {
   const date = new Date();
   let month = '' + (date.getMonth() + 1);
   let day = '' + date.getDate();
@@ -169,6 +162,29 @@ const generateDate = () => {
 
   return `${year}/${month}/${day} ${time}`;
 };
+
+const generateReleaseDate = (date) => {
+  const newDate = new Date(date);
+  const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(newDate);
+  const month = new Intl.DateTimeFormat('en', { month: 'short' }).format(newDate);
+  const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(newDate);
+
+  return `${day} ${month} ${year}`;
+};
+
+const generateReleaseYear = (date) => {
+  const newDate = new Date(date);
+  const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(newDate);
+
+  return `${year}`;
+};
+
+const generateDuration = (duration) => {
+  const hours = Math.floor(duration/60);
+  const minutes = Math.round(((duration/60)-hours)*60);
+
+  return `${hours}h ${minutes}m`;
+}
 
 const getRandomElement = (array) => {
   return array[getRandomNumber(0, array.length-1)];
@@ -205,7 +221,7 @@ const generateComment = (id) => {
     id:  `comment${id}`,
     author: `${getRandomElement(NAME)}`,
     comment: `${getRandomElement(COMMENTS)}`,
-    data: generateDate(),
+    data: generateCommentDate(),
     emotion: `${getRandomElement(EMOJI)}`,
   };
 };
@@ -230,8 +246,8 @@ const generateFilmCard = () => {
   return  {
     id: id,
     title: `${getRandomElement(TITLE)}`,
-    runtime: `${getRandomElement(RUNTIME)}`,
-    release: `${getRandomElement(RELEASE_YEAR)}`,
+    runtime: generateDuration(getRandomElement(RUNTIME)),
+    release: generateReleaseYear(getRandomElement(RELEASE_DATE)),
     poster: `${getRandomElement(POSTERS)}`,
     genre: generateArrays(GENRE),
     description: generateValues(DESCRIPTION),
@@ -248,13 +264,13 @@ const generateFilmPopup = () => {
   return {
     id: id++,
     title: `${getRandomElement(TITLE)}`,
-    runtime: `${getRandomElement(RUNTIME)}`,
+    runtime: generateDuration(getRandomElement(RUNTIME)),
     alternativelTitle: `${getRandomElement(TITLE)}`,
     rating: getRandomNumber(MIN_RATING, MAX_RATING),
     poster: `${getRandomElement(POSTERS)}`,
     country: `${getRandomElement(COUNTRY)}`,
     ageAllowance: `${getRandomElement(AGE_ALLOWANCE)}`,
-    releaseDate: `${getRandomElement(RELEASE_DATE)}`,
+    releaseDate: generateReleaseDate(getRandomElement(RELEASE_DATE)),
     genre: generateArrays(GENRE),
     director: generateArrays(DIRECTORS),
     writers: generateArrays(WRITERS),
@@ -268,9 +284,3 @@ console.log(generateFilmPopup());
 
 export {generateFilmCard, generateFilmPopup};
 
-
-// let d = new Date(2010, 7, 5);
-// let ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
-// let mo = new Intl.DateTimeFormat('en', { month: 'short' }).format(d);
-// let da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(d);
-// console.log(`${da}-${mo}-${ye}`);

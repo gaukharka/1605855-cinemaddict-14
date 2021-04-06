@@ -28,9 +28,9 @@ const headerElement = document.querySelector('.header');
 const mainElement = document.querySelector('.main');
 const footerElement = document.querySelector('.footer');
 
-// for(let i=0; i<1; i++){
-//   render(bodyElement, createPopupTemplate(filmInfo[i]), 'beforeEnd');
-// }
+for(let i=0; i<1; i++){
+  render(bodyElement, createPopupTemplate(filmInfo[i]), 'beforeEnd');
+}
 
 render(headerElement, createUserRankTemplate(), 'beforeEnd');
 render(mainElement, createSiteMenuTemplate(), 'beforeEnd');
@@ -67,12 +67,6 @@ render(allFilms, createTopRatedFilmsTemplate(), 'beforeEnd');
 
 const topFilms = allFilms.querySelector('.films-list--top');
 const topFilmsContainer = topFilms.querySelector('.films-list__container');
-
-const sortByMaxValue = (filmA, filmB) => {
-  const valueA = filmA.comments.length;
-  const valueB = filmB.comments.length;
-  return valueB - valueA;
-};
 
 for(let i; i< MIN_CARD_COUNT; i++){
   render(topFilmsContainer, createFilmCardTemplate(film[i]), 'beforeEnd');
