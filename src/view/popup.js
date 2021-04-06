@@ -1,20 +1,12 @@
 import {createCommentTemplate} from './comments.js';
+import {generateReleaseDate, isTrue} from './utils.js';
 
-const isGenreMore = (genre) => {
-  genre.length >= 1 ? true : false;
-};
+const createPopupTemplate = (film) => {
+  const {comments} = film;
+  const {title, alternativelTitle, runtime, poster, genre, description, rating, ageAllowance, director, writers, actors, release} = film.filmInfo;
 
-// const createGenresTemplate = (genre) => {
-//   for(let i=0; i<genre.length; i++){
-//     return `<span class="film-details__genre">${genre[i]}
-//   </span>`;
-//   }
-// };
-
-const createPopupTemplate = (filmDetails) => {
-  const {title, alternativelTitle, runtime, poster, genre, description, rating, comments, country, ageAllowance, director, writers, actors, releaseDate} = filmDetails;
-
-  const stringGenre = isGenreMore(genre) === true ? 'Genres' : 'Genre';
+  const stringGenre = isTrue(genre) === true ? 'Genres' : 'Genre';
+  const releaseDate = generateReleaseDate(release.releaseDate);
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -64,7 +56,7 @@ const createPopupTemplate = (filmDetails) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
-              <td class="film-details__cell">${country}</td>
+              <td class="film-details__cell">${release.country}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">${stringGenre}</td>

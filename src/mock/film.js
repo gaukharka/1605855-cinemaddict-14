@@ -1,7 +1,9 @@
+import {generateReleaseDate} from '../utils.js';
+
 const MIN_RATING = 1;
 const MAX_RATING = 9;
-const MIN_COMMENT_COUNT = 0;
-const MAX_COMMENT_COUNT = 5;
+// const MIN_COMMENT_COUNT = 0;
+// const MAX_COMMENT_COUNT = 5;
 
 const TITLE = [
   'Movie #1',
@@ -163,28 +165,12 @@ const generateCommentDate = () => {
   return `${year}/${month}/${day} ${time}`;
 };
 
-const generateReleaseDate = (date) => {
-  const newDate = new Date(date);
-  const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(newDate);
-  const month = new Intl.DateTimeFormat('en', { month: 'short' }).format(newDate);
-  const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(newDate);
-
-  return `${day} ${month} ${year}`;
-};
-
-const generateReleaseYear = (date) => {
-  const newDate = new Date(date);
-  const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(newDate);
-
-  return `${year}`;
-};
-
 const generateDuration = (duration) => {
   const hours = Math.floor(duration/60);
   const minutes = Math.round(((duration/60)-hours)*60);
 
   return `${hours}h ${minutes}m`;
-}
+};
 
 const getRandomElement = (array) => {
   return array[getRandomNumber(0, array.length-1)];
@@ -237,46 +223,52 @@ const generateComments = (filmId) => {
 };
 
 // Film Card
-const ids = [];
-
-const generateFilmCard = () => {
-  // return ids.map((id) => (
-  return  {
-    id: id,
-    title: `${getRandomElement(TITLE)}`,
-    runtime: generateDuration(getRandomElement(RUNTIME)),
-    release: generateReleaseYear(getRandomElement(RELEASE_DATE)),
-    poster: `${getRandomElement(POSTERS)}`,
-    genre: generateArrays(GENRE),
-    description: generateValues(DESCRIPTION),
-    rating: getRandomNumber(MIN_RATING, MAX_RATING),
-    commentsCount: getRandomNumber(MIN_COMMENT_COUNT, MAX_COMMENT_COUNT),
-  };
-// ));
-};
+// const generateFilmCard = () => {
+//   return  {
+//     id: id,
+//     title: `${getRandomElement(TITLE)}`,
+//     runtime: generateDuration(getRandomElement(RUNTIME)),
+//     release: generateReleaseYear(getRandomElement(RELEASE_DATE)),
+//      releaseDate: generateReleaseDate(getRandomElement(RELEASE_DATE)),
+//     poster: `${getRandomElement(POSTERS)}`,
+//     genre: generateArrays(GENRE),
+//     description: generateValues(DESCRIPTION),
+//     rating: getRandomNumber(MIN_RATING, MAX_RATING),
+//     commentsCount: getRandomNumber(MIN_COMMENT_COUNT, MAX_COMMENT_COUNT),
+//   };
+// };
 
 // Popup
 let id = 0;
 
-const generateFilmPopup = () => {
+const generateFilmPopupMocks = () => {
   return {
     id: id++,
-    title: `${getRandomElement(TITLE)}`,
-    runtime: generateDuration(getRandomElement(RUNTIME)),
-    alternativelTitle: `${getRandomElement(TITLE)}`,
-    rating: getRandomNumber(MIN_RATING, MAX_RATING),
-    poster: `${getRandomElement(POSTERS)}`,
-    country: `${getRandomElement(COUNTRY)}`,
-    ageAllowance: `${getRandomElement(AGE_ALLOWANCE)}`,
-    releaseDate: generateReleaseDate(getRandomElement(RELEASE_DATE)),
-    genre: generateArrays(GENRE),
-    director: generateArrays(DIRECTORS),
-    writers: generateArrays(WRITERS),
-    actors: generateArrays(ACTORS),
     comments: generateComments(id),
-    description: generateValues(DESCRIPTION),
+    filmInfo: {
+      title: `${getRandomElement(TITLE)}`,
+      alternativelTitle: `${getRandomElement(TITLE)}`,
+      rating: getRandomNumber(MIN_RATING, MAX_RATING),
+      poster: `${getRandomElement(POSTERS)}`,
+      ageAllowance: `${getRandomElement(AGE_ALLOWANCE)}`,
+      director: generateArrays(DIRECTORS),
+      writers: generateArrays(WRITERS),
+      actors: generateArrays(ACTORS),
+      release: {
+        releaseDate: `${getRandomElement(RELEASE_DATE)}`,
+        country: `${getRandomElement(COUNTRY)}`,
+      },
+      runtime: generateDuration(getRandomElement(RUNTIME)),
+      genre: generateArrays(GENRE),
+      description: generateValues(DESCRIPTION),
+    },
+    userDetails: {
+      watchList: false,
+      alreadyWatched: true,
+      favorit: false,
+      // watchingDate: generateReleaseDate(getRandomElement(RELEASE_DATE)),
+    },
   };
 };
 
-export {generateFilmCard, generateFilmPopup};
-
+export {generateFilmPopupMocks};
