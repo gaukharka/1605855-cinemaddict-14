@@ -236,8 +236,6 @@ const generateComments = (filmId) => {
   return comments;
 };
 
-console.log(generateComments());
-
 // Film Card
 const ids = [];
 
@@ -279,8 +277,6 @@ const generateFilmPopup = () => {
     description: generateValues(DESCRIPTION),
   };
 };
-
-console.log(generateFilmPopup());
 
 export {generateFilmCard, generateFilmPopup};
 

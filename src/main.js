@@ -9,15 +9,17 @@ import {createFooterStatsTemplate} from './view/footer-stats.js';
 import {createLoadMoreButton} from './view/load-more-button.js';
 import {createTopRatedFilmsTemplate} from './view/top-rated-films.js';
 import {createMostCommentedFilmsTemplate} from './view/most-commented-films.js';
-import {createPopupTemplate, createCommentTemplate} from './view/popup.js';
+import {createPopupTemplate} from './view/popup.js';
+import {createCommentTemplate} from './view/comments.js';
 import {generateFilmCard, generateFilmPopup} from './mock/film.js';
 
-const MAX_CARD_COUNT = 5;
+const MAX_CARD_COUNT = 15;
 const MIN_CARD_COUNT = 2;
 const POPUP_COUNT = 1;
 
 const film = new Array(MAX_CARD_COUNT).fill().map(generateFilmCard);
-const filmInfo = new Array(POPUP_COUNT).fill().map(generateFilmPopup);
+// const filmInfo = new Array(1).fill().map(generateFilmPopup);
+const filmInfo = generateFilmPopup();
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -28,9 +30,11 @@ const headerElement = document.querySelector('.header');
 const mainElement = document.querySelector('.main');
 const footerElement = document.querySelector('.footer');
 
-for(let i=0; i<1; i++){
-  render(bodyElement, createPopupTemplate(filmInfo[i]), 'beforeEnd');
-}
+// for(let i=0; i<1; i++){
+//   render(bodyElement, createPopupTemplate(filmInfo[i]), 'beforeEnd');
+// }
+
+render(bodyElement, createPopupTemplate(filmInfo), 'beforeEnd');
 
 render(headerElement, createUserRankTemplate(), 'beforeEnd');
 render(mainElement, createSiteMenuTemplate(), 'beforeEnd');
@@ -45,22 +49,18 @@ render(allFilms, createAllFilmsListTemplate(), 'beforeEnd');
 const allFilmsList = allFilms.querySelector('.films-list');
 const allFilmsListContainer = allFilmsList.querySelector('.films-list__container');
 
-for(let i=0; i< MAX_CARD_COUNT; i++){
+for(let i=0; i< 5; i++){
   render(allFilmsListContainer, createFilmCardTemplate(film[i]), 'beforeEnd');
 }
 
 render(allFilmsList, createLoadMoreButton(), 'beforeEnd');
 
 // Comments container
-// const filmDetails = bodyElement.querySelector('.film-details');
-// const filmDetailsBottomContainer = filmDetails.querySelector('.film-details__bottom-container');
-// const commentsList = filmDetailsBottomContainer.querySelector('.film-details__comments-list');
+const filmDetails = bodyElement.querySelector('.film-details');
+const filmDetailsBottomContainer = filmDetails.querySelector('.film-details__bottom-container');
+const commentsList = filmDetailsBottomContainer.querySelector('.film-details__comments-list');
 
-// const comment = new Array(4).fill().map(createCommentTemplate);
-
-// for(let i=0; i< MAX_CARD_COUNT; i++){
-//   render(commentsList, createCommentTemplate(comment[i]), 'beforeEnd');
-// }
+render(commentsList, createCommentTemplate(filmInfo), 'beforeend');
 
 // Top films
 render(allFilms, createTopRatedFilmsTemplate(), 'beforeEnd');
