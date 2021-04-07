@@ -1,9 +1,7 @@
-import {generateReleaseDate} from '../utils.js';
+// import {generateReleaseDate} from '../utils.js';
 
 const MIN_RATING = 1;
 const MAX_RATING = 9;
-// const MIN_COMMENT_COUNT = 0;
-// const MAX_COMMENT_COUNT = 5;
 
 const TITLE = [
   'Movie #1',
@@ -138,38 +136,14 @@ const NAME = [
   'Anvar',
 ];
 
+export const shuffle = (array) => {
+  array.sort(() => Math.random() - 0.5);
+};
+
 const getRandomNumber = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
-const shuffle = (array) => {
-  array.sort(() => Math.random() - 0.5);
-};
-
-const generateCommentDate = () => {
-  const date = new Date();
-  let month = '' + (date.getMonth() + 1);
-  let day = '' + date.getDate();
-  const year = date.getFullYear();
-  const time = date.toTimeString().replace(/.*(\d{2}:\d{2}).*/, '$1');
-
-  if(month.length < 2) {
-    month = '0' + month;
-  }
-  if(day.length < 2){
-    day = '0' + day;
-  }
-
-  return `${year}/${month}/${day} ${time}`;
-};
-
-const generateDuration = (duration) => {
-  const hours = Math.floor(duration/60);
-  const minutes = Math.round(((duration/60)-hours)*60);
-
-  return `${hours}h ${minutes}m`;
 };
 
 const getRandomElement = (array) => {
@@ -202,6 +176,30 @@ const generateArrays = (array) => {
   return values;
 };
 
+const generateCommentDate = () => {
+  const date = new Date();
+  let month = '' + (date.getMonth() + 1);
+  let day = '' + date.getDate();
+  const year = date.getFullYear();
+  const time = date.toTimeString().replace(/.*(\d{2}:\d{2}).*/, '$1');
+
+  if(month.length < 2) {
+    month = '0' + month;
+  }
+  if(day.length < 2){
+    day = '0' + day;
+  }
+
+  return `${year}/${month}/${day} ${time}`;
+};
+
+const generateDuration = (duration) => {
+  const hours = Math.floor(duration/60);
+  const minutes = Math.round(((duration/60)-hours)*60);
+
+  return `${hours}h ${minutes}m`;
+};
+
 const generateComment = (id) => {
   return {
     id:  `comment${id}`,
@@ -212,7 +210,7 @@ const generateComment = (id) => {
   };
 };
 
-const generateComments = (filmId) => {
+const generateCommentsMocks = (filmId) => {
   const commentLength = getRandomNumber(1, 5);
   const comments = [];
 
@@ -222,29 +220,13 @@ const generateComments = (filmId) => {
   return comments;
 };
 
-// Film Card
-// const generateFilmCard = () => {
-//   return  {
-//     id: id,
-//     title: `${getRandomElement(TITLE)}`,
-//     runtime: generateDuration(getRandomElement(RUNTIME)),
-//     release: generateReleaseYear(getRandomElement(RELEASE_DATE)),
-//      releaseDate: generateReleaseDate(getRandomElement(RELEASE_DATE)),
-//     poster: `${getRandomElement(POSTERS)}`,
-//     genre: generateArrays(GENRE),
-//     description: generateValues(DESCRIPTION),
-//     rating: getRandomNumber(MIN_RATING, MAX_RATING),
-//     commentsCount: getRandomNumber(MIN_COMMENT_COUNT, MAX_COMMENT_COUNT),
-//   };
-// };
-
 // Popup
 let id = 0;
 
-const generateFilmPopupMocks = () => {
+const generateFilmsMock = () => {
   return {
     id: id++,
-    comments: generateComments(id),
+    comments: generateCommentsMocks(id++),
     filmInfo: {
       title: `${getRandomElement(TITLE)}`,
       alternativelTitle: `${getRandomElement(TITLE)}`,
@@ -271,4 +253,4 @@ const generateFilmPopupMocks = () => {
   };
 };
 
-export {generateFilmPopupMocks};
+export {generateFilmsMock, generateCommentsMocks};

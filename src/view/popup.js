@@ -1,7 +1,6 @@
-import {createCommentTemplate} from './comments.js';
 import {generateReleaseDate, isTrue} from './utils.js';
 
-const createPopupTemplate = (film) => {
+export const createPopupTemplate = (film) => {
   const {comments} = film;
   const {title, alternativelTitle, runtime, poster, genre, description, rating, ageAllowance, director, writers, actors, release} = film.filmInfo;
 
@@ -85,9 +84,6 @@ const createPopupTemplate = (film) => {
       <section class="film-details__comments-wrap">
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
-        <ul class="film-details__comments-list">
-        </ul>
-
         <div class="film-details__new-comment">
           <div class="film-details__add-emoji-label"></div>
 
@@ -122,5 +118,3 @@ const createPopupTemplate = (film) => {
   </form>
 </section>`;
 };
-
-export {createPopupTemplate, createCommentTemplate};

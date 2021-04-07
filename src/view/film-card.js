@@ -4,7 +4,7 @@ const isDescriptionLong = (description) => {
   return description.length >=140 ? true : false;
 };
 
-const createFilmCardTemplate = (film) => {
+export const createFilmCardTemplate = (film) => {
   const {comments} = film;
   const {title, runtime, release, poster, genre, description, rating} = film.filmInfo;
   const filmDescription = isDescriptionLong(description) === true ? description.substring(0, 139) + '...' : description;
@@ -29,5 +29,3 @@ const createFilmCardTemplate = (film) => {
   </div>
 </article>`;
 };
-
-export {createFilmCardTemplate};
