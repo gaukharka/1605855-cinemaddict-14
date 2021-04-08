@@ -1,4 +1,9 @@
-const createStatsTemplate = (filmCounts) => {
+const createStatsTemplate = (films) => {
+
+  const history = films.filter((film) => film.userDetails.alreadyWatched).length;
+  const runtime = films.filter((film) => film.filmInfo.runtime);
+
+
   return `<section class="statistic">
   <p class="statistic__rank">
     Your rank
@@ -28,7 +33,7 @@ const createStatsTemplate = (filmCounts) => {
   <ul class="statistic__text-list">
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">You watched</h4>
-      <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+      <p class="statistic__item-text">${history} <span class="statistic__item-description">movies</span></p>
     </li>
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">Total duration</h4>

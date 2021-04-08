@@ -25,24 +25,15 @@ export const isTrue = (value) => {
 //   }
 // };
 
-const countMovieFilters = {
-  watchlist: (films) => films.filter((film) => film.userDetails.watchList).length,
-  history: (films) => films.filter((film) => film.userDetails.alreadyWatched).length,
-  favorite: (films) => films.filter((film) => film.userDetails.alreadyWatched).length,
-};
-
-export const generateFilmFilters = (films) => {
-  return Object.entries(countMovieFilters).map(([filmFilterName, filmCounts]) => {
-    return{
-      name: filmFilterName,
-      count: filmCounts(films),
-    };
-  });
-};
-
 export const generateSortedByDateFilms = (filmA, filmB) => {
   const dateA = generateReleaseYear(filmA.filmInfo.release.releaseDate);
   const dateB = generateReleaseYear(filmB.filmInfo.release.releaseDate);
 
   return dateB -dateA;
+};
+
+export const generateSortedByRatingFilms = (filmA, filmB) => {
+  const ratingA = filmA.filmInfo.rating;
+  const ratingB = filmB.filmInfo.rating;
+  return ratingB - ratingA;
 };
