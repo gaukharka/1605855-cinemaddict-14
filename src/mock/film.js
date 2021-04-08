@@ -136,6 +136,15 @@ const NAME = [
   'Anvar',
 ];
 
+export const generateReleaseDate = (date) => {
+  const newDate = new Date(date);
+  const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(newDate);
+  const month = new Intl.DateTimeFormat('en', { month: 'short' }).format(newDate);
+  const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(newDate);
+
+  return `${day} ${month} ${year}`;
+};
+
 export const shuffle = (array) => {
   array.sort(() => Math.random() - 0.5);
 };
@@ -200,6 +209,7 @@ const generateDuration = (duration) => {
   return `${hours}h ${minutes}m`;
 };
 
+
 const generateComment = (id) => {
   return {
     id:  `comment${id}`,
@@ -221,12 +231,12 @@ const generateCommentsMocks = (filmId) => {
 };
 
 // Popup
-let id = 0;
+let ids = 0;
 
 const generateFilmsMock = () => {
   return {
-    id: id++,
-    comments: generateCommentsMocks(id++),
+    id: ids++,
+    comments: generateCommentsMocks(ids),
     filmInfo: {
       title: `${getRandomElement(TITLE)}`,
       alternativelTitle: `${getRandomElement(TITLE)}`,
@@ -245,10 +255,10 @@ const generateFilmsMock = () => {
       description: generateValues(DESCRIPTION),
     },
     userDetails: {
-      watchList: false,
-      alreadyWatched: true,
-      favorit: false,
-      // watchingDate: generateReleaseDate(getRandomElement(RELEASE_DATE)),
+      watchList: Boolean(getRandomNumber(0, 1)),
+      alreadyWatched: Boolean(getRandomNumber(0, 1)),
+      favorite: Boolean(getRandomNumber(0, 1)),
+      watchingDate: `${generateReleaseDate(getRandomElement(RELEASE_DATE))}`,
     },
   };
 };

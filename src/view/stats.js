@@ -1,4 +1,4 @@
-const createStatsTemplate = () => {
+const createStatsTemplate = (filmCounts) => {
   return `<section class="statistic">
   <p class="statistic__rank">
     Your rank

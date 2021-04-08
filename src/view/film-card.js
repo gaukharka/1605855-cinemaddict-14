@@ -5,9 +5,15 @@ const isDescriptionLong = (description) => {
 };
 
 export const createFilmCardTemplate = (film) => {
+
   const {comments} = film;
   const {title, runtime, release, poster, genre, description, rating} = film.filmInfo;
+  const {watchList, alreadyWatched, favorite} = film.userDetails;
+
   const filmDescription = isDescriptionLong(description) === true ? description.substring(0, 139) + '...' : description;
+  const watchlistClassName = watchList === true ? 'film-card__controls-item--active' : '';
+  const alreadyWatchedClassName = alreadyWatched === true ? 'film-card__controls-item--active' : '';
+  const favoriteClassName = favorite === true ? 'film-card__controls-item--active' : '';
 
   const year = generateReleaseYear(release.releaseDate);
 
@@ -23,9 +29,9 @@ export const createFilmCardTemplate = (film) => {
   <p class="film-card__description">${filmDescription}</p>
   <a class="film-card__comments">${comments.length} comments</a>
   <div class="film-card__controls">
-    <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
-    <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>
-    <button class="film-card__controls-item button film-card__controls-item--favorite" type="button">Mark as favorite</button>
+    <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchlistClassName}" type="button">Add to watchlist</button>
+    <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${alreadyWatchedClassName}" type="button">Mark as watched</button>
+    <button class="film-card__controls-item button film-card__controls-item--favorite" type="button ${favoriteClassName}">Mark as favorite</button>
   </div>
 </article>`;
 };

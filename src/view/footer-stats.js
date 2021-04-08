@@ -1,7 +1,7 @@
-const createFooterStatsTemplate = () => {
+const createFooterStatsTemplate = (count) => {
   return `<section class="footer__logo logo logo--smaller">Cinemaddict</section>
   <section class="footer__statistics">
-    <p>130 291 movies inside</p>
+    <p>${count.length} movies inside</p>
   </section>`;
 };
 

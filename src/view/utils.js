@@ -1,6 +1,7 @@
 export const generateReleaseYear = (date) => {
   const newDate = new Date(date);
   const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(newDate);
+
   return `${year}`;
 };
 
@@ -23,3 +24,25 @@ export const isTrue = (value) => {
 //   </span>`;
 //   }
 // };
+
+const countMovieFilters = {
+  watchlist: (films) => films.filter((film) => film.userDetails.watchList).length,
+  history: (films) => films.filter((film) => film.userDetails.alreadyWatched).length,
+  favorite: (films) => films.filter((film) => film.userDetails.alreadyWatched).length,
+};
+
+export const generateFilmFilters = (films) => {
+  return Object.entries(countMovieFilters).map(([filmFilterName, filmCounts]) => {
+    return{
+      name: filmFilterName,
+      count: filmCounts(films),
+    };
+  });
+};
+
+export const generateSortedByDateFilms = (filmA, filmB) => {
+  const dateA = generateReleaseYear(filmA.filmInfo.release.releaseDate);
+  const dateB = generateReleaseYear(filmB.filmInfo.release.releaseDate);
+
+  return dateB -dateA;
+};

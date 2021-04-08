@@ -2,10 +2,15 @@ import {generateReleaseDate, isTrue} from './utils.js';
 
 export const createPopupTemplate = (film) => {
   const {comments} = film;
-  const {title, alternativelTitle, runtime, poster, genre, description, rating, ageAllowance, director, writers, actors, release} = film.filmInfo;
+  const {title, alternativelTitle, runtime, poster, genre, description, rating, ageAllowance, director, writers, actors, release } = film.filmInfo;
+  const {watchList, alreadyWatched, favorite} = film.userDetails;
 
   const stringGenre = isTrue(genre) === true ? 'Genres' : 'Genre';
   const releaseDate = generateReleaseDate(release.releaseDate);
+
+  const watchlistChecked = watchList ? 'checked' : '';
+  const alreadyWatchedChecked = alreadyWatched ? 'checked' : '';
+  const favoriteChecked = favorite ? 'checked' : '';
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -69,13 +74,13 @@ export const createPopupTemplate = (film) => {
       </div>
 
       <section class="film-details__controls">
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchlistChecked}>
         <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${alreadyWatchedChecked}>
         <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favoriteChecked}>
         <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
       </section>
     </div>
