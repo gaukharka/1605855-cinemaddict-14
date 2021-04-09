@@ -1,3 +1,23 @@
+export const generateDuration = (duration) => {
+  const hours = Math.floor(duration/60);
+  const minutes = Math.round(((duration/60)-hours)*60);
+
+  return `${hours}h ${minutes}m`;
+};
+
+export const generateHour = (duration) => {
+  const hours = Math.floor(duration/60);
+
+  return `${hours}`;
+};
+
+export const generateMinutes = (duration) => {
+  const hours = Math.floor(duration/60);
+  const minutes = Math.round(((duration/60)-hours)*60);
+
+  return `${minutes}`;
+};
+
 export const generateReleaseYear = (date) => {
   const newDate = new Date(date);
   const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(newDate);
@@ -17,13 +37,6 @@ export const generateReleaseDate = (date) => {
 export const isTrue = (value) => {
   value.length >= 2 ? true : false;
 };
-
-// const createGenresTemplate = (genre) => {
-//   for(let i=0; i<genre.length; i++){
-//     return `<span class="film-details__genre">${genre[i]}
-//   </span>`;
-//   }
-// };
 
 export const generateSortedByDateFilms = (filmA, filmB) => {
   const dateA = generateReleaseYear(filmA.filmInfo.release.releaseDate);

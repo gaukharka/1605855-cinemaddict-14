@@ -21,11 +21,11 @@ const RELEASE_DATE = [
 ];
 
 const RUNTIME = [
-  '90',
-  '180',
-  '130',
-  '50',
-  '110',
+  90,
+  180,
+  130,
+  50,
+  110,
 ];
 
 const POSTERS = [
@@ -181,7 +181,7 @@ const generateArrays = (array) => {
     result.push(array[i]);
   }
 
-  const values = result.join(', ');
+  const values = result.join(' ');
   return values;
 };
 
@@ -200,13 +200,6 @@ const generateCommentDate = () => {
   }
 
   return `${year}/${month}/${day} ${time}`;
-};
-
-const generateDuration = (duration) => {
-  const hours = Math.floor(duration/60);
-  const minutes = Math.round(((duration/60)-hours)*60);
-
-  return `${hours}h ${minutes}m`;
 };
 
 
@@ -250,8 +243,8 @@ const generateFilmsMock = () => {
         releaseDate: `${getRandomElement(RELEASE_DATE)}`,
         country: `${getRandomElement(COUNTRY)}`,
       },
-      runtime: generateDuration(getRandomElement(RUNTIME)),
-      genre: generateArrays(GENRE),
+      runtime: getRandomElement(RUNTIME),
+      genre: generateArrays(GENRE).split(' '),
       description: generateValues(DESCRIPTION),
     },
     userDetails: {

@@ -2,10 +2,10 @@ import {generateReleaseDate, isTrue} from './utils.js';
 
 export const createPopupTemplate = (film) => {
   const {comments} = film;
-  const {title, alternativelTitle, runtime, poster, genre, description, rating, ageAllowance, director, writers, actors, release } = film.filmInfo;
+  const {title, alternativelTitle, runtime, poster, description, rating, genre, ageAllowance, director, writers, actors, release } = film.filmInfo;
   const {watchList, alreadyWatched, favorite} = film.userDetails;
 
-  const stringGenre = isTrue(genre) === true ? 'Genres' : 'Genre';
+  const stringGenre = isTrue(genre === true) ? 'Genres' : 'Genre';
   const releaseDate = generateReleaseDate(release.releaseDate);
 
   const watchlistChecked = watchList ? 'checked' : '';
@@ -62,11 +62,8 @@ export const createPopupTemplate = (film) => {
               <td class="film-details__term">Country</td>
               <td class="film-details__cell">${release.country}</td>
             </tr>
-            <tr class="film-details__row">
-              <td class="film-details__term">${stringGenre}</td>
-              <td class="film-details__cell film-details__cell-genre">
-              ${genre}
-              </tr>
+            <tr class="film-details__row film-details__row-genre">
+            <td class="film-details__term">${stringGenre}</td>
           </table>
 
           <p class="film-details__film-description">${description}</p>

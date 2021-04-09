@@ -1,4 +1,6 @@
 import {generateReleaseYear} from './utils.js';
+import {generateDuration} from './utils.js';
+
 
 const isDescriptionLong = (description) => {
   return description.length >=140 ? true : false;
@@ -7,7 +9,7 @@ const isDescriptionLong = (description) => {
 export const createFilmCardTemplate = (film) => {
 
   const {comments} = film;
-  const {title, runtime, release, poster, genre, description, rating} = film.filmInfo;
+  const {title, runtime, release, genre, poster, description, rating} = film.filmInfo;
   const {watchList, alreadyWatched, favorite} = film.userDetails;
 
   const filmDescription = isDescriptionLong(description) === true ? description.substring(0, 139) + '...' : description;
@@ -16,14 +18,15 @@ export const createFilmCardTemplate = (film) => {
   const favoriteClassName = favorite === true ? 'film-card__controls-item--active' : '';
 
   const year = generateReleaseYear(release.releaseDate);
+  const duration = generateDuration(runtime);
 
   return `<article class="film-card">
   <h3 class="film-card__title">${title}</h3>
   <p class="film-card__rating">${rating}</p>
   <p class="film-card__info">
     <span class="film-card__year">${year}</span>
-    <span class="film-card__duration">${runtime}</span>
-    <span class="film-card__genre">${genre}</span>
+    <span class="film-card__duration">${duration}</span>
+    <span class="film-card__genre">${genre[0]}</span>
   </p>
   <img src="${poster}" alt="" class="film-card__poster">
   <p class="film-card__description">${filmDescription}</p>
