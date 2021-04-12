@@ -25,9 +25,9 @@ const MIN_CARD_COUNT = 2;
 const FILMS_DISPLAY_STEP = 5;
 
 const films = new Array(MAX_CARD_COUNT).fill().map(generateFilmsMock);
-// const comments = generateCommentsMocks();
 const userRank = generateUserRank(films);
 const filters = generateFilmFilters(films);
+const filmsCount = films.length;
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -158,9 +158,7 @@ sortByRatingButton.addEventListener('click', () => {
 });
 
 // Popup container
-for(let i=0; i<1; i++){
-  render(bodyElement, createPopupTemplate(films[i]), 'beforeEnd');
-}
+render(bodyElement, createPopupTemplate(films[0]), 'beforeEnd');
 
 // Comments container
 const filmDetails = bodyElement.querySelector('.film-details');
@@ -222,4 +220,4 @@ for(let i=0; i< MIN_CARD_COUNT; i++){
 }
 
 // Footer stats
-render(footerElement, createFooterStatsTemplate(films), 'beforeend');
+render(footerElement, createFooterStatsTemplate(filmsCount), 'beforeend');

@@ -34,10 +34,6 @@ export const generateReleaseDate = (date) => {
   return `${day} ${month} ${year}`;
 };
 
-export const isTrue = (value) => {
-  value.length >= 2 ? true : false;
-};
-
 export const generateSortedByDateFilms = (filmA, filmB) => {
   const dateA = generateReleaseYear(filmA.filmInfo.release.releaseDate);
   const dateB = generateReleaseYear(filmB.filmInfo.release.releaseDate);
@@ -48,5 +44,6 @@ export const generateSortedByDateFilms = (filmA, filmB) => {
 export const generateSortedByRatingFilms = (filmA, filmB) => {
   const ratingA = filmA.filmInfo.rating;
   const ratingB = filmB.filmInfo.rating;
+
   return ratingB - ratingA;
 };
