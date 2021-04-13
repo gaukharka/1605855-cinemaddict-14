@@ -1,4 +1,21 @@
-const createStatsTemplate = () => {
+import {generateHour, generateMinutes} from './utils.js';
+
+const createStatsTemplate = (films) => {
+
+  const historyArray = films.filter((film) => film.userDetails.alreadyWatched);
+  const history = historyArray.length;
+  const runtimeArray = historyArray.map((film) => film.filmInfo.runtime);
+  const runtime = runtimeArray.reduce((runtimeA, runtimeB) => runtimeA + runtimeB);
+  const hour = generateHour(runtime);
+  const minute = generateMinutes(runtime);
+  const topGenreArray = historyArray.map((film) => film.filmInfo.genre).flat();
+  const getTopGenre = (films) => {
+    return films.sort((genreA, genreB) =>
+      films.filter((film) => film===genreA).length
+      - films.filter((film) => film===genreB).length).pop();
+  };
+
+
   return `<section class="statistic">
   <p class="statistic__rank">
     Your rank
@@ -28,15 +45,15 @@ const createStatsTemplate = () => {
   <ul class="statistic__text-list">
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">You watched</h4>
-      <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+      <p class="statistic__item-text">${history} <span class="statistic__item-description">movies</span></p>
     </li>
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">Total duration</h4>
-      <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+      <p class="statistic__item-text">${hour} <span class="statistic__item-description">h</span> ${minute} <span class="statistic__item-description">m</span></p>
     </li>
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">Top genre</h4>
-      <p class="statistic__item-text">Sci-Fi</p>
+      <p class="statistic__item-text">${getTopGenre(topGenreArray)}</p>
     </li>
   </ul>
 

@@ -1,21 +1,40 @@
-const createFilmCardTemplate = () => {
+import {generateReleaseYear} from './utils.js';
+import {generateDuration} from './utils.js';
+
+
+const isDescriptionLong = (description) => {
+  return description.length >=140 ? true : false;
+};
+
+export const createFilmCardTemplate = (film) => {
+
+  const {comments} = film;
+  const {title, runtime, release, genre, poster, description, rating} = film.filmInfo;
+  const {watchList, alreadyWatched, favorite} = film.userDetails;
+
+  const filmDescription = isDescriptionLong(description) === true ? description.substring(0, 139) + '...' : description;
+  const watchlistClassName = watchList === true ? 'film-card__controls-item--active' : '';
+  const alreadyWatchedClassName = alreadyWatched === true ? 'film-card__controls-item--active' : '';
+  const favoriteClassName = favorite === true ? 'film-card__controls-item--active' : '';
+
+  const year = generateReleaseYear(release.releaseDate);
+  const duration = generateDuration(runtime);
+
   return `<article class="film-card">
-  <h3 class="film-card__title">The Dance of Life</h3>
-  <p class="film-card__rating">8.3</p>
+  <h3 class="film-card__title">${title}</h3>
+  <p class="film-card__rating">${rating}</p>
   <p class="film-card__info">
-    <span class="film-card__year">1929</span>
-    <span class="film-card__duration">1h 55m</span>
-    <span class="film-card__genre">Musical</span>
+    <span class="film-card__year">${year}</span>
+    <span class="film-card__duration">${duration}</span>
+    <span class="film-card__genre">${genre[0]}</span>
   </p>
-  <img src="./images/posters/the-dance-of-life.jpg" alt="" class="film-card__poster">
-  <p class="film-card__description">Burlesque comic Ralph "Skid" Johnson (Skelly), and specialty dancer Bonny Lee King (Carroll), end up together on a cold, rainy night at a tr…</p>
-  <a class="film-card__comments">5 comments</a>
+  <img src="${poster}" alt="" class="film-card__poster">
+  <p class="film-card__description">${filmDescription}</p>
+  <a class="film-card__comments">${comments.length} comments</a>
   <div class="film-card__controls">
-    <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
-    <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>
-    <button class="film-card__controls-item button film-card__controls-item--favorite" type="button">Mark as favorite</button>
+    <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchlistClassName}" type="button">Add to watchlist</button>
+    <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${alreadyWatchedClassName}" type="button">Mark as watched</button>
+    <button class="film-card__controls-item button film-card__controls-item--favorite" type="button ${favoriteClassName}">Mark as favorite</button>
   </div>
 </article>`;
 };
-
-export {createFilmCardTemplate};
