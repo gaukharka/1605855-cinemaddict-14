@@ -1,6 +1,6 @@
-import {generateReleaseDate} from './utils.js';
+import {generateReleaseDate, createElement} from '../utils.js';
 
-export const createPopupTemplate = (film) => {
+const createPopupTemplate = (film) => {
   const {comments} = film;
   const {title, alternativelTitle, runtime, poster, description, rating, genre, ageAllowance, director, writers, actors, release } = film.filmInfo;
   const {watchList, alreadyWatched, favorite} = film.userDetails;
@@ -63,7 +63,8 @@ export const createPopupTemplate = (film) => {
               <td class="film-details__cell">${release.country}</td>
             </tr>
             <tr class="film-details__row film-details__row-genre">
-            <td class="film-details__term">${stringGenre}</td>
+              <td class="film-details__term">${stringGenre}</td>
+            </tr>
           </table>
 
           <p class="film-details__film-description">${description}</p>
@@ -120,3 +121,26 @@ export const createPopupTemplate = (film) => {
   </form>
 </section>`;
 };
+
+export default class Popup {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._film);
+  }
+
+  getElement() {
+    if(!this._element){
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
