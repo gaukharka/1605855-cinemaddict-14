@@ -1,5 +1,3 @@
-// import {generateReleaseDate} from '../utils.js';
-
 const MIN_RATING = 1;
 const MAX_RATING = 9;
 

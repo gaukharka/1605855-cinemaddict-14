@@ -1,3 +1,5 @@
+import {createElement} from '../utils.js';
+
 const createSiteMenuTemplate = (filters) => {
   const watchlistCount = filters[0].count;
   const history = filters[1].count;
@@ -14,4 +16,25 @@ const createSiteMenuTemplate = (filters) => {
 </nav>`;
 };
 
-export {createSiteMenuTemplate};
+export default class SiteMenu {
+  constructor(filters) {
+    this._filters = filters;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteMenuTemplate(this._filters);
+  }
+
+  getElement() {
+    if(!this._element){
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
