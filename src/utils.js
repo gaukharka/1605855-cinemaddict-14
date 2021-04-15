@@ -82,3 +82,9 @@ export const createElement = (template) => {
 export const isEscEvent = (evt) => {
   return evt.key === ('Escape' || 'Esc');
 };
+
+export const compareComments = (filmA, filmB) => {
+  const commentA = filmA.comments.length;
+  const commentB = filmB.comments.length;
+  return commentB - commentA;
+};

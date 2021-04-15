@@ -55,6 +55,30 @@ export default class FilmCard {
     return this._element;
   }
 
+  getPoster() {
+    if(!this._element){
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element.querySelector('.film-card__poster');
+  }
+
+  getTitle() {
+    if(!this._element){
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element.querySelector('.film-card__title');
+  }
+
+  getComment() {
+    if(!this._element){
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element.querySelector('.film-card__comments');
+  }
+
   removeElement() {
     this._element = null;
   }
