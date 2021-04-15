@@ -32,11 +32,13 @@ const bodyElement = document.querySelector('body');
 const headerElement = bodyElement.querySelector('.header');
 const mainElement = bodyElement.querySelector('.main');
 const footerElement = bodyElement.querySelector('.footer');
+const filmSortingView = new FilmSortingView();
+const showMoreButton = new LoadMoreButtonView();
 
 // Render User Rank, Menu, Sorting
 render(headerElement, new UserRankView(userRank).getElement(), RenderPosition.BEFOREEND);
 render(mainElement, new SiteMenuView(filters).getElement(), RenderPosition.BEFOREEND);
-render(mainElement, new FilmSortingView().getElement(), RenderPosition.BEFOREEND);
+render(mainElement, filmSortingView.getElement(), RenderPosition.BEFOREEND);
 
 // Render Stats
 const statsButton = mainElement.querySelector('.main-navigation__additional');
@@ -76,16 +78,14 @@ const renderFilmCard = (container, films) => {
     }
   };
 
-  const onClickClosePopup = (evt) => {
-    evt.preventDefault();
+  const onClickClosePopup = () => {
     closePopup();
   };
 
   const closePopup = () => {
     popup.getElement().remove();
     popup.removeElement();
-    document.body.classList.add('hide-overflow');
-    popup.getCloseButton().removeEventListener('click', onClickClosePopup);
+    document.body.classList.remove('hide-overflow');
     document.removeEventListener('keydown', onPopupEscKeydown);
   };
 
@@ -102,32 +102,37 @@ const renderFilmCard = (container, films) => {
   render(container, filmCard.getElement(), RenderPosition.BEFOREEND);
 };
 
+// Function to show more films
+const showMoreFilms = (films) => {
+  let displayedFilms = FILMS_DISPLAY_STEP;
+
+  render(allFilmsListMain, showMoreButton.getElement(), RenderPosition.BEFOREEND);
+  showMoreButton.getElement().addEventListener('click', (evt)=> {
+    evt.preventDefault();
+    films
+      .slice(displayedFilms, displayedFilms + MAX_CARD_RENDERED)
+      .forEach((film) => renderFilmCard(allFilmsListMainContainer, film));
+
+    displayedFilms += FILMS_DISPLAY_STEP;
+
+    if(displayedFilms >= films.length){
+      showMoreButton.getElement().remove();
+      showMoreButton.removeElement();
+    }
+  });
+};
+
 //Function for rendering all film cards
 const renderFilmCards = (filmsData) => {
   allFilmsListMainContainer.innerHTML = '';
+  showMoreFilms.remove;
 
   for(let i=0; i< Math.min(filmsData.length, FILMS_DISPLAY_STEP); i++){
     renderFilmCard(allFilmsListMainContainer, filmsData[i]);
   }
 
-  if(filmsData.length>FILMS_DISPLAY_STEP) {
-    let displayedFilms = FILMS_DISPLAY_STEP;
-
-    render(allFilmsListMain, new LoadMoreButtonView().getElement(), RenderPosition.BEFOREEND);
-
-    const loadMoreFilmsButton = allFilmsListMain.querySelector('.films-list__show-more');
-    loadMoreFilmsButton.addEventListener('click', (evt)=> {
-      evt.preventDefault();
-      filmsData
-        .slice(displayedFilms, displayedFilms + MAX_CARD_RENDERED)
-        .forEach((film) => renderFilmCard(allFilmsListMainContainer, film));
-
-      displayedFilms += FILMS_DISPLAY_STEP;
-
-      if(displayedFilms >= filmsData.length){
-        loadMoreFilmsButton.remove();
-      }
-    });
+  if(films.length>FILMS_DISPLAY_STEP) {
+    showMoreFilms(filmsData);
   }
 };
 
@@ -140,31 +145,25 @@ const renderExtraFilmCards = (container, filmsData) => {
   }
 };
 
-// Sort by date
-const sortButtons = mainElement.querySelectorAll('.sort__button');
-const sortByDateButton = mainElement.querySelector('.sort__button-date');
-
-sortByDateButton.addEventListener('click', () => {
-  sortButtons.forEach((button) => {
-    button.classList.remove('sort__button--active');
+// Function for rendering Sort by Default, by Date, by Ratings
+const renderSorting = (sortingButton, sort) => {
+  sortingButton.addEventListener('click', () => {
+    sortButtons.forEach((button) => {
+      button.classList.remove('sort__button--active');
+    });
+    sortingButton.classList.add('sort__button--active');
+    renderFilmCards(sort);
   });
-  sortByDateButton.classList.add('sort__button--active');
-  allFilmsListMain.querySelector('.films-list__container').innerHTML = '';
-  renderFilmCards(sortedBydateFilmsArray);
-});
+};
 
-// Sort by rating
-const sortByRatingButton = mainElement.querySelector('.sort__button-rating');
+const sortButtons = filmSortingView.getElement().querySelectorAll('.sort__button');
+const sortByDefaultButton = filmSortingView.getElement().querySelector('.sort__button-default');
+const sortByDateButton = filmSortingView.getElement().querySelector('.sort__button-date');
+const sortByRatingButton = filmSortingView.getElement().querySelector('.sort__button-rating');
 
-sortByRatingButton.addEventListener('click', () => {
-  sortButtons.forEach((button) => {
-    button.classList.remove('sort__button--active');
-  });
-  sortByRatingButton.classList.add('sort__button--active');
-  allFilmsListMain.querySelector('.films-list__container').innerHTML = '';
-  renderFilmCards(sortedByRatingFilmsArray);
-});
-
+renderSorting(sortByDefaultButton, films);
+renderSorting(sortByDateButton, sortedBydateFilmsArray);
+renderSorting(sortByRatingButton, sortedByRatingFilmsArray);
 renderFilmCards(films);
 renderExtraFilmCards(topFilmsContainer, sortedByRatingFilmsArray);
 renderExtraFilmCards(mostCommentedFilmsContainer, mostCommentedFilmsArray);
