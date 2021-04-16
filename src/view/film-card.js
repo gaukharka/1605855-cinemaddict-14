@@ -1,4 +1,5 @@
 import {generateReleaseYear, generateDuration, createElement} from '../utils.js';
+import AbstractView from './abstract.js';
 
 const isDescriptionLong = (description) => {
   return description.length >=140 ? true : false;
@@ -37,22 +38,14 @@ const createFilmCardTemplate = (film) => {
 </article>`;
 };
 
-export default class FilmCard {
+export default class FilmCard extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
-  }
-
-  getElement() {
-    if(!this._element){
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
   }
 
   getPoster() {
@@ -77,9 +70,5 @@ export default class FilmCard {
     }
 
     return this._element.querySelector('.film-card__comments');
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

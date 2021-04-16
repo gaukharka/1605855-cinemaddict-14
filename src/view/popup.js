@@ -1,4 +1,5 @@
-import {generateReleaseDate, createElement} from '../utils.js';
+import {generateReleaseDate} from '../utils.js';
+import AbstractView from './abstract.js';
 
 const createPopupTemplate = (film) => {
   const {comments} = film;
@@ -150,29 +151,17 @@ const createPopupTemplate = (film) => {
   </form>
 </section>`;
 };
-export default class Popup {
+export default class Popup extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
   }
 
   getTemplate() {
     return createPopupTemplate(this._film);
   }
 
-  getElement() {
-    if(!this._element){
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
   getCloseButton() {
     return this._element.querySelector('.film-details__close-btn');
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
