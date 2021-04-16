@@ -13,7 +13,8 @@ import PopupView from './view/popup.js';
 import {generateFilmsMock} from './mock/film.js';
 import {generateUserRank} from './mock/rank.js';
 import {generateFilmFilters} from './mock/filter.js';
-import {generateSortedByDateFilms, generateSortedByRatingFilms, compareComments, render, RenderPosition, isEscEvent} from './utils.js';
+import {generateSortedByDateFilms, generateSortedByRatingFilms, compareComments, isEscEvent} from './utils/film.js';
+import {render, remove, RenderPosition} from './utils/render.js';
 
 const MAX_CARD_COUNT = 27;
 const MAX_CARD_RENDERED = 5;
@@ -40,31 +41,32 @@ const allFilmsView = new AllFilmsView();
 const filmListMainView = new FilmListMainView();
 const topRatedFilmsView = new TopRatedFilmsView();
 const topCommentedFilmsView = new TopCommentedFilmsView();
+const footerStatsView = new FooterStatsView(filmsCount);
 
 // Render User Rank, Menu, Sorting
-render(headerElement, userRankView.getElement(), RenderPosition.BEFOREEND);
-render(mainElement, siteMenuView.getElement(), RenderPosition.BEFOREEND);
-render(mainElement, filmSortingView.getElement(), RenderPosition.BEFOREEND);
+render(headerElement, userRankView, RenderPosition.BEFOREEND);
+render(mainElement, siteMenuView, RenderPosition.BEFOREEND);
+render(mainElement, filmSortingView, RenderPosition.BEFOREEND);
 
 // Render Stats
 siteMenuView.setStatsClickHandler(() => {
-  render(mainElement, new StatsView(films).getElement(), RenderPosition.AFTERBEGIN);
+  render(mainElement, new StatsView(films), RenderPosition.AFTERBEGIN);
 });
 
 // Render main page container
-render(mainElement, allFilmsView.getElement(), RenderPosition.BEFOREEND);
+render(mainElement, allFilmsView, RenderPosition.BEFOREEND);
 const allFilms = mainElement.querySelector('.films');
 render(allFilms, filmListMainView.getElement(), RenderPosition.BEFOREEND);
 const allFilmsListMain = allFilms.querySelector('.films-list--main');
 const allFilmsListMainContainer = allFilmsListMain.querySelector('.films-list__container');
 
 // Render top rated films container
-render(allFilms, topRatedFilmsView.getElement(), RenderPosition.BEFOREEND);
+render(allFilms, topRatedFilmsView, RenderPosition.BEFOREEND);
 const topFilms = allFilms.querySelector('.films-list--top');
 const topFilmsContainer = topFilms.querySelector('.films-list__container');
 
 // Render most commented films container
-render(allFilms, topCommentedFilmsView.getElement(), RenderPosition.BEFOREEND);
+render(allFilms, topCommentedFilmsView, RenderPosition.BEFOREEND);
 const mostCommentedFilms = allFilms.querySelector('.films-list--popular');
 const mostCommentedFilmsContainer = mostCommentedFilms.querySelector('.films-list__container');
 
@@ -93,7 +95,7 @@ const renderFilmCard = (container, films) => {
   };
 
   const openPopup = () => {
-    render(bodyElement, popup.getElement(), RenderPosition.BEFOREEND);
+    render(bodyElement, popup, RenderPosition.BEFOREEND);
     popup.setCloseButtonClickHandler(() => onClickClosePopup());
     document.body.classList.add('hide-overflow');
     document.addEventListener('keydown', onPopupEscKeydown);
@@ -109,7 +111,7 @@ const renderFilmCard = (container, films) => {
 const showMoreFilms = (films) => {
   let displayedFilms = FILMS_DISPLAY_STEP;
 
-  render(allFilmsListMain, showMoreButton.getElement(), RenderPosition.BEFOREEND);
+  render(allFilmsListMain, showMoreButton, RenderPosition.BEFOREEND);
   showMoreButton.setLoadMoreButtonClickHandler(() => {
     films
       .slice(displayedFilms, displayedFilms + MAX_CARD_RENDERED)
@@ -118,8 +120,7 @@ const showMoreFilms = (films) => {
     displayedFilms += FILMS_DISPLAY_STEP;
 
     if(displayedFilms >= films.length){
-      showMoreButton.getElement().remove();
-      showMoreButton.removeElement();
+      remove(showMoreButton);
     }
   });
 };
@@ -169,4 +170,4 @@ renderSorting(sortByRatingButton, sortedByRatingFilmsArray);
 renderFilmCards(films);
 renderExtraFilmCards(topFilmsContainer, sortedByRatingFilmsArray);
 renderExtraFilmCards(mostCommentedFilmsContainer, mostCommentedFilmsArray);
-render(footerElement, new FooterStatsView(filmsCount).getElement(), RenderPosition.BEFOREEND);
+render(footerElement, footerStatsView, RenderPosition.BEFOREEND);

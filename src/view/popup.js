@@ -1,4 +1,4 @@
-import {generateReleaseDate} from '../utils.js';
+import {generateReleaseDate} from '../utils/film.js';
 import AbstractView from './abstract.js';
 
 const createPopupTemplate = (film) => {

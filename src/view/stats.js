@@ -1,4 +1,4 @@
-import {generateHour, generateMinutes} from '../utils.js';
+import {generateHour, generateMinutes} from '../utils/film.js';
 import AbstractView from './abstract.js';
 
 const createStatsTemplate = (films) => {

@@ -1,4 +1,5 @@
-import {generateReleaseYear, generateDuration, createElement} from '../utils.js';
+import {generateReleaseYear, generateDuration} from '../utils/film.js';
+import {createElement} from '../utils/render.js';
 import AbstractView from './abstract.js';
 
 const isDescriptionLong = (description) => {
