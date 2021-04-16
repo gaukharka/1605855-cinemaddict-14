@@ -32,36 +32,39 @@ const bodyElement = document.querySelector('body');
 const headerElement = bodyElement.querySelector('.header');
 const mainElement = bodyElement.querySelector('.main');
 const footerElement = bodyElement.querySelector('.footer');
+const siteMenuView = new SiteMenuView(filters);
+const userRankView = new UserRankView(userRank);
 const filmSortingView = new FilmSortingView();
 const showMoreButton = new LoadMoreButtonView();
+const allFilmsView = new AllFilmsView();
+const filmListMainView = new FilmListMainView();
+const topRatedFilmsView = new TopRatedFilmsView();
+const topCommentedFilmsView = new TopCommentedFilmsView();
 
 // Render User Rank, Menu, Sorting
-render(headerElement, new UserRankView(userRank).getElement(), RenderPosition.BEFOREEND);
-render(mainElement, new SiteMenuView(filters).getElement(), RenderPosition.BEFOREEND);
+render(headerElement, userRankView.getElement(), RenderPosition.BEFOREEND);
+render(mainElement, siteMenuView.getElement(), RenderPosition.BEFOREEND);
 render(mainElement, filmSortingView.getElement(), RenderPosition.BEFOREEND);
 
 // Render Stats
-const statsButton = mainElement.querySelector('.main-navigation__additional');
-
-statsButton.addEventListener('click', (evt) => {
-  evt.preventDefault();
+siteMenuView.setStatsClickHandler(() => {
   render(mainElement, new StatsView(films).getElement(), RenderPosition.AFTERBEGIN);
 });
 
 // Render main page container
-render(mainElement, new AllFilmsView().getElement(), RenderPosition.BEFOREEND);
+render(mainElement, allFilmsView.getElement(), RenderPosition.BEFOREEND);
 const allFilms = mainElement.querySelector('.films');
-render(allFilms, new FilmListMainView().getElement(), RenderPosition.BEFOREEND);
+render(allFilms, filmListMainView.getElement(), RenderPosition.BEFOREEND);
 const allFilmsListMain = allFilms.querySelector('.films-list--main');
 const allFilmsListMainContainer = allFilmsListMain.querySelector('.films-list__container');
 
 // Render top rated films container
-render(allFilms, new TopRatedFilmsView().getElement(), RenderPosition.BEFOREEND);
+render(allFilms, topRatedFilmsView.getElement(), RenderPosition.BEFOREEND);
 const topFilms = allFilms.querySelector('.films-list--top');
 const topFilmsContainer = topFilms.querySelector('.films-list__container');
 
 // Render most commented films container
-render(allFilms, new TopCommentedFilmsView().getElement(), RenderPosition.BEFOREEND);
+render(allFilms, topCommentedFilmsView.getElement(), RenderPosition.BEFOREEND);
 const mostCommentedFilms = allFilms.querySelector('.films-list--popular');
 const mostCommentedFilmsContainer = mostCommentedFilms.querySelector('.films-list__container');
 
@@ -91,14 +94,14 @@ const renderFilmCard = (container, films) => {
 
   const openPopup = () => {
     render(bodyElement, popup.getElement(), RenderPosition.BEFOREEND);
-    popup.getCloseButton().addEventListener('click', onClickClosePopup);
+    popup.setCloseButtonClickHandler(() => onClickClosePopup());
     document.body.classList.add('hide-overflow');
     document.addEventListener('keydown', onPopupEscKeydown);
   };
 
-  filmCard.getPoster().addEventListener('click', openPopup);
-  filmCard.getTitle().addEventListener('click', openPopup);
-  filmCard.getComment().addEventListener('click', openPopup);
+  filmCard.setPosterClickHandler(() => openPopup());
+  filmCard.setTitleClickHandler(() => openPopup());
+  filmCard.setCommentClickHandler(() => openPopup());
   render(container, filmCard.getElement(), RenderPosition.BEFOREEND);
 };
 
@@ -107,8 +110,7 @@ const showMoreFilms = (films) => {
   let displayedFilms = FILMS_DISPLAY_STEP;
 
   render(allFilmsListMain, showMoreButton.getElement(), RenderPosition.BEFOREEND);
-  showMoreButton.getElement().addEventListener('click', (evt)=> {
-    evt.preventDefault();
+  showMoreButton.setLoadMoreButtonClickHandler(() => {
     films
       .slice(displayedFilms, displayedFilms + MAX_CARD_RENDERED)
       .forEach((film) => renderFilmCard(allFilmsListMainContainer, film));
@@ -156,10 +158,10 @@ const renderSorting = (sortingButton, sort) => {
   });
 };
 
-const sortButtons = filmSortingView.getElement().querySelectorAll('.sort__button');
-const sortByDefaultButton = filmSortingView.getElement().querySelector('.sort__button-default');
-const sortByDateButton = filmSortingView.getElement().querySelector('.sort__button-date');
-const sortByRatingButton = filmSortingView.getElement().querySelector('.sort__button-rating');
+const sortButtons = filmSortingView.getSortButton();
+const sortByDefaultButton = filmSortingView.getSortByDefaultButton();
+const sortByDateButton = filmSortingView.getSortByDateButton();
+const sortByRatingButton = filmSortingView.getSortByRateButton();
 
 renderSorting(sortByDefaultButton, films);
 renderSorting(sortByDateButton, sortedBydateFilmsArray);

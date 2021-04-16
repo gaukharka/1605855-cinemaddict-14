@@ -42,13 +42,16 @@ export default class FilmCard extends AbstractView {
   constructor(film) {
     super();
     this._film = film;
+    this._posterClickHandler= this._posterClickHandler.bind(this);
+    this._titleClickHandler= this._titleClickHandler.bind(this);
+    this._commentClickHandler= this._commentClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
   }
 
-  getPoster() {
+  _getPoster() {
     if(!this._element){
       this._element = createElement(this.getTemplate());
     }
@@ -56,7 +59,7 @@ export default class FilmCard extends AbstractView {
     return this._element.querySelector('.film-card__poster');
   }
 
-  getTitle() {
+  _getTitle() {
     if(!this._element){
       this._element = createElement(this.getTemplate());
     }
@@ -64,11 +67,41 @@ export default class FilmCard extends AbstractView {
     return this._element.querySelector('.film-card__title');
   }
 
-  getComment() {
+  _getComment() {
     if(!this._element){
       this._element = createElement(this.getTemplate());
     }
 
     return this._element.querySelector('.film-card__comments');
+  }
+
+  _posterClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.posterClick();
+  }
+
+  setPosterClickHandler(callback) {
+    this._callback.posterClick = callback;
+    this._getPoster().addEventListener('click', this._posterClickHandler);
+  }
+
+  _titleClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.titleClick();
+  }
+
+  setTitleClickHandler(callback) {
+    this._callback.titleClick = callback;
+    this._getTitle().addEventListener('click', this._titleClickHandler);
+  }
+
+  _commentClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.commentClick();
+  }
+
+  setCommentClickHandler(callback) {
+    this._callback.commentClick = callback;
+    this._getComment().addEventListener('click', this._commentClickHandler);
   }
 }

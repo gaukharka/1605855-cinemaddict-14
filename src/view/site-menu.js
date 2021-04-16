@@ -20,9 +20,20 @@ export default class SiteMenu extends AbstractView {
   constructor(filters) {
     super();
     this._filters = filters;
+    this._statsClickHandler= this._statsClickHandler.bind(this);
   }
 
   getTemplate() {
     return createSiteMenuTemplate(this._filters);
+  }
+
+  _statsClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.statsClick();
+  }
+
+  setStatsClickHandler(callback) {
+    this._callback.statsClick = callback;
+    this.getElement().querySelector('.main-navigation__additional').addEventListener('click', this._statsClickHandler);
   }
 }

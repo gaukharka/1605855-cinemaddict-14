@@ -12,4 +12,20 @@ export default class FilmSorting extends AbstractView {
   getTemplate() {
     return createFilmSortingElementTemplate();
   }
+
+  getSortButton() {
+    return this._element.querySelectorAll('.sort__button');
+  }
+
+  getSortByDefaultButton() {
+    return this._element.querySelector('.sort__button-default');
+  }
+
+  getSortByDateButton() {
+    return this._element.querySelector('.sort__button-date');
+  }
+
+  getSortByRateButton() {
+    return this._element.querySelector('.sort__button-rating');
+  }
 }
