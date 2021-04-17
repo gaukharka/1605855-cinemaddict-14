@@ -13,7 +13,8 @@ import PopupView from './view/popup.js';
 import {generateFilmsMock} from './mock/film.js';
 import {generateUserRank} from './mock/rank.js';
 import {generateFilmFilters} from './mock/filter.js';
-import {generateSortedByDateFilms, generateSortedByRatingFilms, compareComments, render, RenderPosition, isEscEvent} from './utils.js';
+import {generateSortedByDateFilms, generateSortedByRatingFilms, compareComments, isEscEvent} from './utils/film.js';
+import {render, remove, RenderPosition} from './utils/render.js';
 
 const MAX_CARD_COUNT = 27;
 const MAX_CARD_RENDERED = 5;
@@ -32,36 +33,40 @@ const bodyElement = document.querySelector('body');
 const headerElement = bodyElement.querySelector('.header');
 const mainElement = bodyElement.querySelector('.main');
 const footerElement = bodyElement.querySelector('.footer');
+const siteMenuView = new SiteMenuView(filters);
+const userRankView = new UserRankView(userRank);
 const filmSortingView = new FilmSortingView();
 const showMoreButton = new LoadMoreButtonView();
+const allFilmsView = new AllFilmsView();
+const filmListMainView = new FilmListMainView();
+const topRatedFilmsView = new TopRatedFilmsView();
+const topCommentedFilmsView = new TopCommentedFilmsView();
+const footerStatsView = new FooterStatsView(filmsCount);
 
 // Render User Rank, Menu, Sorting
-render(headerElement, new UserRankView(userRank).getElement(), RenderPosition.BEFOREEND);
-render(mainElement, new SiteMenuView(filters).getElement(), RenderPosition.BEFOREEND);
-render(mainElement, filmSortingView.getElement(), RenderPosition.BEFOREEND);
+render(headerElement, userRankView, RenderPosition.BEFOREEND);
+render(mainElement, siteMenuView, RenderPosition.BEFOREEND);
+render(mainElement, filmSortingView, RenderPosition.BEFOREEND);
 
 // Render Stats
-const statsButton = mainElement.querySelector('.main-navigation__additional');
-
-statsButton.addEventListener('click', (evt) => {
-  evt.preventDefault();
-  render(mainElement, new StatsView(films).getElement(), RenderPosition.AFTERBEGIN);
+siteMenuView.setStatsClickHandler(() => {
+  render(mainElement, new StatsView(films), RenderPosition.AFTERBEGIN);
 });
 
 // Render main page container
-render(mainElement, new AllFilmsView().getElement(), RenderPosition.BEFOREEND);
+render(mainElement, allFilmsView, RenderPosition.BEFOREEND);
 const allFilms = mainElement.querySelector('.films');
-render(allFilms, new FilmListMainView().getElement(), RenderPosition.BEFOREEND);
+render(allFilms, filmListMainView.getElement(), RenderPosition.BEFOREEND);
 const allFilmsListMain = allFilms.querySelector('.films-list--main');
 const allFilmsListMainContainer = allFilmsListMain.querySelector('.films-list__container');
 
 // Render top rated films container
-render(allFilms, new TopRatedFilmsView().getElement(), RenderPosition.BEFOREEND);
+render(allFilms, topRatedFilmsView, RenderPosition.BEFOREEND);
 const topFilms = allFilms.querySelector('.films-list--top');
 const topFilmsContainer = topFilms.querySelector('.films-list__container');
 
 // Render most commented films container
-render(allFilms, new TopCommentedFilmsView().getElement(), RenderPosition.BEFOREEND);
+render(allFilms, topCommentedFilmsView, RenderPosition.BEFOREEND);
 const mostCommentedFilms = allFilms.querySelector('.films-list--popular');
 const mostCommentedFilmsContainer = mostCommentedFilms.querySelector('.films-list__container');
 
@@ -90,15 +95,15 @@ const renderFilmCard = (container, films) => {
   };
 
   const openPopup = () => {
-    render(bodyElement, popup.getElement(), RenderPosition.BEFOREEND);
-    popup.getCloseButton().addEventListener('click', onClickClosePopup);
+    render(bodyElement, popup, RenderPosition.BEFOREEND);
+    popup.setCloseButtonClickHandler(() => onClickClosePopup());
     document.body.classList.add('hide-overflow');
     document.addEventListener('keydown', onPopupEscKeydown);
   };
 
-  filmCard.getPoster().addEventListener('click', openPopup);
-  filmCard.getTitle().addEventListener('click', openPopup);
-  filmCard.getComment().addEventListener('click', openPopup);
+  filmCard.setPosterClickHandler(() => openPopup());
+  filmCard.setTitleClickHandler(() => openPopup());
+  filmCard.setCommentClickHandler(() => openPopup());
   render(container, filmCard.getElement(), RenderPosition.BEFOREEND);
 };
 
@@ -106,9 +111,8 @@ const renderFilmCard = (container, films) => {
 const showMoreFilms = (films) => {
   let displayedFilms = FILMS_DISPLAY_STEP;
 
-  render(allFilmsListMain, showMoreButton.getElement(), RenderPosition.BEFOREEND);
-  showMoreButton.getElement().addEventListener('click', (evt)=> {
-    evt.preventDefault();
+  render(allFilmsListMain, showMoreButton, RenderPosition.BEFOREEND);
+  showMoreButton.setLoadMoreButtonClickHandler(() => {
     films
       .slice(displayedFilms, displayedFilms + MAX_CARD_RENDERED)
       .forEach((film) => renderFilmCard(allFilmsListMainContainer, film));
@@ -116,8 +120,7 @@ const showMoreFilms = (films) => {
     displayedFilms += FILMS_DISPLAY_STEP;
 
     if(displayedFilms >= films.length){
-      showMoreButton.getElement().remove();
-      showMoreButton.removeElement();
+      remove(showMoreButton);
     }
   });
 };
@@ -156,10 +159,10 @@ const renderSorting = (sortingButton, sort) => {
   });
 };
 
-const sortButtons = filmSortingView.getElement().querySelectorAll('.sort__button');
-const sortByDefaultButton = filmSortingView.getElement().querySelector('.sort__button-default');
-const sortByDateButton = filmSortingView.getElement().querySelector('.sort__button-date');
-const sortByRatingButton = filmSortingView.getElement().querySelector('.sort__button-rating');
+const sortButtons = filmSortingView.getSortButton();
+const sortByDefaultButton = filmSortingView.getSortByDefaultButton();
+const sortByDateButton = filmSortingView.getSortByDateButton();
+const sortByRatingButton = filmSortingView.getSortByRateButton();
 
 renderSorting(sortByDefaultButton, films);
 renderSorting(sortByDateButton, sortedBydateFilmsArray);
@@ -167,4 +170,4 @@ renderSorting(sortByRatingButton, sortedByRatingFilmsArray);
 renderFilmCards(films);
 renderExtraFilmCards(topFilmsContainer, sortedByRatingFilmsArray);
 renderExtraFilmCards(mostCommentedFilmsContainer, mostCommentedFilmsArray);
-render(footerElement, new FooterStatsView(filmsCount).getElement(), RenderPosition.BEFOREEND);
+render(footerElement, footerStatsView, RenderPosition.BEFOREEND);

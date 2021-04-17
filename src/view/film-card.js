@@ -1,4 +1,6 @@
-import {generateReleaseYear, generateDuration, createElement} from '../utils.js';
+import {generateReleaseYear, generateDuration} from '../utils/film.js';
+import {createElement} from '../utils/render.js';
+import AbstractView from './abstract.js';
 
 const isDescriptionLong = (description) => {
   return description.length >=140 ? true : false;
@@ -37,25 +39,20 @@ const createFilmCardTemplate = (film) => {
 </article>`;
 };
 
-export default class FilmCard {
+export default class FilmCard extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
+    this._posterClickHandler= this._posterClickHandler.bind(this);
+    this._titleClickHandler= this._titleClickHandler.bind(this);
+    this._commentClickHandler= this._commentClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
   }
 
-  getElement() {
-    if(!this._element){
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  getPoster() {
+  _getPoster() {
     if(!this._element){
       this._element = createElement(this.getTemplate());
     }
@@ -63,7 +60,7 @@ export default class FilmCard {
     return this._element.querySelector('.film-card__poster');
   }
 
-  getTitle() {
+  _getTitle() {
     if(!this._element){
       this._element = createElement(this.getTemplate());
     }
@@ -71,7 +68,7 @@ export default class FilmCard {
     return this._element.querySelector('.film-card__title');
   }
 
-  getComment() {
+  _getComment() {
     if(!this._element){
       this._element = createElement(this.getTemplate());
     }
@@ -79,7 +76,33 @@ export default class FilmCard {
     return this._element.querySelector('.film-card__comments');
   }
 
-  removeElement() {
-    this._element = null;
+  _posterClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.posterClick();
+  }
+
+  setPosterClickHandler(callback) {
+    this._callback.posterClick = callback;
+    this._getPoster().addEventListener('click', this._posterClickHandler);
+  }
+
+  _titleClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.titleClick();
+  }
+
+  setTitleClickHandler(callback) {
+    this._callback.titleClick = callback;
+    this._getTitle().addEventListener('click', this._titleClickHandler);
+  }
+
+  _commentClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.commentClick();
+  }
+
+  setCommentClickHandler(callback) {
+    this._callback.commentClick = callback;
+    this._getComment().addEventListener('click', this._commentClickHandler);
   }
 }

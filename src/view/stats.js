@@ -1,4 +1,5 @@
-import {generateHour, generateMinutes, createElement} from '../utils.js';
+import {generateHour, generateMinutes} from '../utils/film.js';
+import AbstractView from './abstract.js';
 
 const createStatsTemplate = (films) => {
 
@@ -64,25 +65,13 @@ const createStatsTemplate = (films) => {
 </section>`;
 };
 
-export default class Stats {
+export default class Stats extends AbstractView {
   constructor(films) {
+    super();
     this._films = films;
-    this._element = null;
   }
 
   getTemplate() {
     return createStatsTemplate(this._films);
-  }
-
-  getElement() {
-    if(!this._element){
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

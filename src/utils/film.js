@@ -48,43 +48,12 @@ export const generateSortedByRatingFilms = (filmA, filmB) => {
   return ratingB - ratingA;
 };
 
-export const RenderPosition = {
-  AFTERBEGIN: 'afterbegin',
-  BEFOREBEGIN: 'beforebegin',
-  BEFOREEND: 'beforeend',
-};
-
-export const render = (container, element, place) => {
-  switch (place) {
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case RenderPosition.BEFOREBEGIN:
-      container.after(element);
-      break;
-    case RenderPosition.BEFOREEND:
-      container.append(element);
-      break;
-  }
-};
-
-export const renderTemplate = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
-
-export const createElement = (template) => {
-  const newElement = document.createElement('div');
-  newElement.innerHTML = template;
-
-  return newElement.firstChild;
-};
-
-export const isEscEvent = (evt) => {
-  return evt.key === ('Escape' || 'Esc');
-};
-
 export const compareComments = (filmA, filmB) => {
   const commentA = filmA.comments.length;
   const commentB = filmB.comments.length;
   return commentB - commentA;
+};
+
+export const isEscEvent = (evt) => {
+  return evt.key === ('Escape' || 'Esc');
 };

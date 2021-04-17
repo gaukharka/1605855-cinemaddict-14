@@ -1,29 +1,27 @@
-import {createElement} from '../utils.js';
+import AbstractView from './abstract.js';
 
 const createLoadMoreButton = () => {
   return `<button class="films-list__show-more">Show more
   </button>`;
 };
-
-export default class LoadMoreButton {
+export default class LoadMoreButton extends AbstractView {
   constructor() {
-    this._element = null;
+    super();
+    this._loadMoreButtonCliclHandler = this._loadMoreButtonCliclHandler.bind(this);
   }
 
   getTemplate() {
     return createLoadMoreButton();
   }
 
-  getElement() {
-    if(!this._element){
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _loadMoreButtonCliclHandler(evt) {
+    evt.preventDefault();
+    this._callback.loadMoreButtonClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setLoadMoreButtonClickHandler(callback) {
+    this._callback.loadMoreButtonClick = callback;
+    this.getElement().addEventListener('click', this._loadMoreButtonCliclHandler);
   }
 }
 
