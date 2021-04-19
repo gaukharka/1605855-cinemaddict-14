@@ -11,5 +11,13 @@ export default class TopRatedFilms extends AbstractView {
   getTemplate() {
     return createTopRatedFilmsTemplate();
   }
+
+  getContainer() {
+    if (!this._container) {
+      this._container =  this.getElement().querySelector('.films-list__container');
+    }
+
+    return this._container;
+  }
 }
 
