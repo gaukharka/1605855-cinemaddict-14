@@ -1,18 +1,16 @@
 import AllFilmsView from '../view/films.js';
 import FilmListMainView from '../view/films-list.js';
-import FilmCardView from '../view/film-card.js';
 import NoFilms from '../view/no-films.js';
 import FilmSortingView from '../view/film-sorting';
 import TopRatedFilmsView from '../view/top-rated-films.js';
 import TopCommentedFilmsView from '../view/most-commented-films.js';
 import LoadMoreButtonView from '../view/load-more-button.js';
-import PopupView from '../view/popup.js';
 import {render, remove} from '../utils/render.js';
-import {generateSortedByDateFilms, generateSortedByRatingFilms, compareComments, isEscEvent} from '../utils/film.js';
+import {generateSortedByDateFilms, generateSortedByRatingFilms, compareComments} from '../utils/film.js';
+import FilmPresenter from './film.js';
 
 const FILMS_DISPLAY_STEP = 5;
 const MIN_CARD_COUNT = 2;
-
 export default class FilmCards {
   constructor(bodyElement, mainElement) {
     this._bodyElement = bodyElement;
@@ -54,39 +52,8 @@ export default class FilmCards {
   }
 
   _renderFilmCard(container, film) {
-    const filmCardComponent = new FilmCardView(film);
-    const popupComponent = new PopupView(film);
-
-    const onPopupEscKeydown = (evt) => {
-      if (isEscEvent(evt)) {
-        evt.preventDefault();
-        closePopup();
-        document.removeEventListener('keydown', onPopupEscKeydown);
-      }
-    };
-
-    const onClickClosePopup = () => {
-      closePopup();
-    };
-
-    const closePopup = () => {
-      popupComponent.getElement().remove();
-      popupComponent.removeElement();
-      document.body.classList.remove('hide-overflow');
-      document.removeEventListener('keydown', onPopupEscKeydown);
-    };
-
-    const openPopup = () => {
-      render(this._bodyElement, popupComponent, 'beforeend');
-      popupComponent.setCloseButtonClickHandler(() => onClickClosePopup());
-      document.body.classList.add('hide-overflow');
-      document.addEventListener('keydown', onPopupEscKeydown);
-    };
-
-    filmCardComponent.setPosterClickHandler(() => openPopup());
-    filmCardComponent.setTitleClickHandler(() => openPopup());
-    filmCardComponent.setCommentClickHandler(() => openPopup());
-    render(container, filmCardComponent.getElement(), 'beforeend');
+    const filmPresenterComponent = new FilmPresenter(this._bodyElement);
+    filmPresenterComponent.init(container, film);
   }
 
   _renderFilmCards(from, to) {
@@ -96,7 +63,6 @@ export default class FilmCards {
   }
 
   _renderNoFilms() {
-    //render no film message
     render(this._mainElement, this._noFilmsComponent, 'beforeend');
   }
 
