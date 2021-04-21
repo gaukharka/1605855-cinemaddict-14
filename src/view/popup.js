@@ -156,6 +156,10 @@ export default class Popup extends AbstractView {
     super();
     this._film = film;
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
+
+    this._watchListClickHandler = this._watchListClickHandler.bind(this);
+    this._alreadyWatchedClickHandler = this._alreadyWatchedClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -174,5 +178,46 @@ export default class Popup extends AbstractView {
   setCloseButtonClickHandler(callback) {
     this._callback.closeButtonClick = callback;
     this._getCloseButton().addEventListener('click', this._closeButtonClickHandler);
+  }
+
+  _watchListClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchListClick();
+  }
+
+  setWatchListClickHandler(callback) {
+    this._callback.watchListClick = callback;
+    this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('click', this._watchListClickHandler);
+  }
+
+  _alreadyWatchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.alreadyWatchedClick();
+  }
+
+  setAlreadyWatchedClickHandler(callback) {
+    this._callback.alreadyWatchedClick = callback;
+    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('click', this._alreadyWatchedClickHandler);
+  }
+
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('click', this._favoriteClickHandler);
+  }
+
+  // Submit Form to be changed later
+  _submitFormHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit(this._film);
+  }
+
+  setSubmitFormHandler(callback){
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('.film-details__comment-input').addEventListener('submit', this._submitFormHandler);
   }
 }

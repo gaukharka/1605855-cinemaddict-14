@@ -57,3 +57,15 @@ export const compareComments = (filmA, filmB) => {
 export const isEscEvent = (evt) => {
   return evt.key === ('Escape' || 'Esc');
 };
+
+export const getComments = (commentsId, commentsArray) => {
+  const comments = [];
+
+  for (const comment of commentsArray) {
+    if (commentsId.some((value) => value === comment.id)) {
+      comments.push(comment);
+    }
+  }
+
+  return comments;
+};
