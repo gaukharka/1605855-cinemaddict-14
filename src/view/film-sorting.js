@@ -1,31 +1,36 @@
 import AbstractView from './abstract.js';
+import {SortType} from '../const.js';
 
 const createFilmSortingElementTemplate = () => {
   return `<ul class="sort">
-  <li><a href="#" class="sort__button sort__button-default sort__button--active">Sort by default</a></li>
-  <li><a href="#" class="sort__button sort__button-date">Sort by date</a></li>
-  <li><a href="#" class="sort__button sort__button-rating">Sort by rating</a></li>
+  <li><a href="#" class="sort__button sort__button-default sort__button--active" data-sort-type="${SortType.DEFAULT}">Sort by default</a></li>
+  <li><a href="#" class="sort__button sort__button-date" data-sort-type="${SortType.BY_DATE}">Sort by date</a></li>
+  <li><a href="#" class="sort__button sort__button-rating" data-sort-type="${SortType.BY_RATING}">Sort by rating</a></li>
 </ul>`;
 };
 
 export default class FilmSorting extends AbstractView {
+  constructor() {
+    super();
+
+    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
+  }
+
   getTemplate() {
     return createFilmSortingElementTemplate();
   }
 
-  getSortButton() {
-    return this._element.querySelectorAll('.sort__button');
+  _sortTypeChangeHandler(evt) {
+    if (evt.target.tagName !== 'A') {
+      return;
+    }
+
+    evt.preventDefault();
+    this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
 
-  getSortByDefaultButton() {
-    return this._element.querySelector('.sort__button-default');
-  }
-
-  getSortByDateButton() {
-    return this._element.querySelector('.sort__button-date');
-  }
-
-  getSortByRateButton() {
-    return this._element.querySelector('.sort__button-rating');
+  setSortTypeChangeHandler(callback) {
+    this._callback.sortTypeChange = callback;
+    this.getElement().addEventListener('click', this._sortTypeChangeHandler);
   }
 }

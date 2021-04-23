@@ -3,8 +3,7 @@ import AbstractView from './abstract.js';
 
 const createPopupTemplate = (film) => {
   const {comments} = film;
-  const {genre} = film.filmInfo;
-  const {title, alternativelTitle, runtime, poster, description, rating, ageAllowance, director, writers, actors, release } = film.filmInfo;
+  const {title, alternativelTitle, runtime, poster, description, genre, rating, ageAllowance, director, writers, actors, release } = film.filmInfo;
   const {watchList, alreadyWatched, favorite} = film.userDetails;
 
   const stringGenre = (genre.length>=2) ? 'Genres' : 'Genre';
@@ -155,6 +154,7 @@ export default class Popup extends AbstractView {
   constructor(film) {
     super();
     this._film = film;
+
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
 
     this._watchListClickHandler = this._watchListClickHandler.bind(this);
@@ -166,10 +166,6 @@ export default class Popup extends AbstractView {
     return createPopupTemplate(this._film);
   }
 
-  _getCloseButton() {
-    return this._element.querySelector('.film-details__close-btn');
-  }
-
   _closeButtonClickHandler(evt) {
     evt.preventDefault();
     this._callback.closeButtonClick();
@@ -177,7 +173,7 @@ export default class Popup extends AbstractView {
 
   setCloseButtonClickHandler(callback) {
     this._callback.closeButtonClick = callback;
-    this._getCloseButton().addEventListener('click', this._closeButtonClickHandler);
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closeButtonClickHandler);
   }
 
   _watchListClickHandler(evt) {
@@ -185,7 +181,7 @@ export default class Popup extends AbstractView {
     this._callback.watchListClick();
   }
 
-  setWatchListClickHandler(callback) {
+  setPopupWatchListClickHandler(callback) {
     this._callback.watchListClick = callback;
     this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('click', this._watchListClickHandler);
   }
@@ -195,7 +191,7 @@ export default class Popup extends AbstractView {
     this._callback.alreadyWatchedClick();
   }
 
-  setAlreadyWatchedClickHandler(callback) {
+  setPopupAlreadyWatchedClickHandler(callback) {
     this._callback.alreadyWatchedClick = callback;
     this.getElement().querySelector('.film-details__control-label--watched').addEventListener('click', this._alreadyWatchedClickHandler);
   }
@@ -205,19 +201,8 @@ export default class Popup extends AbstractView {
     this._callback.favoriteClick();
   }
 
-  setFavoriteClickHandler(callback) {
+  setPopupFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('click', this._favoriteClickHandler);
-  }
-
-  // Submit Form to be changed later
-  _submitFormHandler(evt) {
-    evt.preventDefault();
-    this._callback.formSubmit(this._film);
-  }
-
-  setSubmitFormHandler(callback){
-    this._callback.formSubmit = callback;
-    this.getElement().querySelector('.film-details__comment-input').addEventListener('submit', this._submitFormHandler);
   }
 }

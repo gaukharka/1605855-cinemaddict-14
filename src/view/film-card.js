@@ -13,9 +13,9 @@ const createFilmCardTemplate = (film) => {
   const {watchList, alreadyWatched, favorite} = film.userDetails;
 
   const filmDescription = isDescriptionLong(description) === true ? description.substring(0, 139) + '...' : description;
-  const watchlistClassName = watchList === true ? 'film-card__controls-item--active' : '';
-  const alreadyWatchedClassName = alreadyWatched === true ? 'film-card__controls-item--active' : '';
-  const favoriteClassName = favorite === true ? 'film-card__controls-item--active' : '';
+  const watchlistClassName = watchList ? 'film-card__controls-item--active' : '';
+  const alreadyWatchedClassName = alreadyWatched ? 'film-card__controls-item--active' : '';
+  const favoriteClassName = favorite ? 'film-card__controls-item--active' : '';
 
   const year = generateReleaseYear(release.releaseDate);
   const duration = generateDuration(runtime);
@@ -43,6 +43,7 @@ export default class FilmCard extends AbstractView {
   constructor(film) {
     super();
     this._film = film;
+
     this._posterClickHandler= this._posterClickHandler.bind(this);
     this._titleClickHandler= this._titleClickHandler.bind(this);
     this._commentClickHandler= this._commentClickHandler.bind(this);

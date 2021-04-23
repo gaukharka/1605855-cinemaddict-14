@@ -1,7 +1,6 @@
 import SiteMenuView from './view/site-menu.js';
 import UserRankView from './view/user-rank.js';
 import StatsView from './view/stats.js';
-import FooterStatsView from './view/footer-stats.js';
 import {generateFilmsMock} from './mock/film.js';
 import {generateUserRank} from './mock/rank.js';
 import {generateFilmFilters} from './mock/filter.js';
@@ -14,17 +13,17 @@ const films = new Array(MAX_CARD_COUNT).fill().map(generateFilmsMock);
 console.log(films);
 const userRank = generateUserRank(films);
 const filters = generateFilmFilters(films);
-const filmsCount = films.length;
 
 const bodyElement = document.querySelector('body');
 const headerElement = bodyElement.querySelector('.header');
 const mainElement = bodyElement.querySelector('.main');
-const footerElement = bodyElement.querySelector('.footer');
+const footer = bodyElement.querySelector('.footer');
+const footerElement = footer.querySelector('.footer__statistics');
+
 const siteMenuView = new SiteMenuView(filters);
 const userRankView = new UserRankView(userRank);
-const footerStatsView = new FooterStatsView(filmsCount);
 
-// Render User Rank, Menu, Sorting
+// Render User Rank, Menu
 render(headerElement, userRankView, 'beforeend');
 render(mainElement, siteMenuView, 'beforeend');
 
@@ -34,7 +33,5 @@ siteMenuView.setStatsClickHandler(() => {
 });
 
 //start
-const filmsCardsBoardPresenter = new FilmCardsBoardPresenter(bodyElement, mainElement);
+const filmsCardsBoardPresenter = new FilmCardsBoardPresenter(bodyElement, mainElement, footerElement);
 filmsCardsBoardPresenter.init(films);
-
-render(footerElement, footerStatsView, RenderPosition.BEFOREEND);
