@@ -45,11 +45,12 @@ export default class Film {
     this._filmCardComponent.setWatchListClickHandler(this._handleWatchListClick);
     this._filmCardComponent.setAlreadyWatchedClickHandler(this._handleAlreadyWatchedClick);
     this._filmCardComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+
     this._popupComponent.setPopupWatchListClickHandler(this._handleWatchListClick);
     this._popupComponent.setPopupAlreadyWatchedClickHandler(this._handleAlreadyWatchedClick);
     this._popupComponent.setPopupFavoriteClickHandler(this._handleFavoriteClick);
 
-    if(prevFilmCardComponent === null || prevPopupComponent === null) {
+    if(prevFilmCardComponent === null) {
       render(this._container, this._filmCardComponent, 'beforeend');
       return;
     }
@@ -62,19 +63,17 @@ export default class Film {
       replace(this._popupComponent, prevPopupComponent);
     }
 
-    remove(prevFilmCardComponent);
     remove(prevPopupComponent);
   }
 
   resetView() {
-    if (this._mode !== Mode.DEFAULT) {
+    if (this._mode === Mode.POPUP) {
       this._closePopup();
     }
   }
 
   destroy() {
     remove(this._filmCardComponent);
-    remove(this._popupComponent);
   }
 
   _escKeyDownHandler(evt) {
@@ -87,20 +86,13 @@ export default class Film {
   }
 
   _openPopup() {
-    render(this._bodyElement, this._popupComponent, 'beforeend');
-    // this._changeMode();
-    this._mode = Mode.POPUP;
-  }
-
-  _closePopup() {
-    if(this._mode !== Mode.DEFAULT) {
-      this._bodyElement.removeChild(this._popupComponent.getElement());
-      this._mode = Mode.DEFAULT;
-    }
+    render(this._bodyElement, this._popupComponent.getElement(), 'beforeend');
   }
 
   _handlePopupOpenClick() {
     this._openPopup();
+    this._changeMode();
+    this._mode = Mode.POPUP;
     document.body.classList.add('hide-overflow');
     document.addEventListener('keydown', this._escKeyDownHandler);
   }
@@ -111,37 +103,66 @@ export default class Film {
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
+  _closePopup() {
+    remove(this._popupComponent);
+    this._mode = Mode.DEFAULT;
+  }
+
   _handleWatchListClick() {
+    const newUserDetails = Object.assign(
+      {},
+      this._film.userDetails,
+      {
+        watchList: !this._film.userDetails.watchList,
+      },
+    );
+
     this._changeData(
       Object.assign(
         {},
         this._film,
         {
-          watchList: !this._film.userDetails.watchList,
+          userDetails: newUserDetails,
         },
       ),
     );
   }
 
   _handleAlreadyWatchedClick() {
+    const newUserDetails = Object.assign(
+      {},
+      this._film.userDetails,
+      {
+        alreadyWatched: !this._film.userDetails.alreadyWatched,
+      },
+    );
+
     this._changeData(
       Object.assign(
         {},
         this._film,
         {
-          alreadyWatched: !this._film.userDetails.alreadyWatched,
+          userDetails: newUserDetails,
         },
       ),
     );
   }
 
   _handleFavoriteClick() {
+    const newUserDetails = Object.assign(
+      {},
+      this._film.userDetails,
+      {
+        favorite: !this._film.userDetails.favorite,
+      },
+    );
+
     this._changeData(
       Object.assign(
         {},
         this._film,
         {
-          favorite: !this._film.userDetails.isFavorite,
+          userDetails: newUserDetails,
         },
       ),
     );

@@ -9,7 +9,7 @@ const createPopupTemplate = (film) => {
   const stringGenre = (genre.length>=2) ? 'Genres' : 'Genre';
   const releaseDate = generateReleaseDate(release.releaseDate);
 
-  const watchlistChecked = watchList ? 'checked' : '';
+  const watchListChecked = watchList ? 'checked' : '';
   const alreadyWatchedChecked = alreadyWatched ? 'checked' : '';
   const favoriteChecked = favorite ? 'checked' : '';
 
@@ -97,7 +97,7 @@ const createPopupTemplate = (film) => {
       </div>
 
       <section class="film-details__controls">
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchlistChecked}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchListChecked}>
         <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
         <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${alreadyWatchedChecked}>

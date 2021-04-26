@@ -13,7 +13,7 @@ const createFilmCardTemplate = (film) => {
   const {watchList, alreadyWatched, favorite} = film.userDetails;
 
   const filmDescription = isDescriptionLong(description) === true ? description.substring(0, 139) + '...' : description;
-  const watchlistClassName = watchList ? 'film-card__controls-item--active' : '';
+  const watchListClassName = watchList ? 'film-card__controls-item--active' : '';
   const alreadyWatchedClassName = alreadyWatched ? 'film-card__controls-item--active' : '';
   const favoriteClassName = favorite ? 'film-card__controls-item--active' : '';
 
@@ -32,9 +32,9 @@ const createFilmCardTemplate = (film) => {
   <p class="film-card__description">${filmDescription}</p>
   <a class="film-card__comments">${comments.length} comments</a>
   <div class="film-card__controls">
-    <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchlistClassName}" type="button">Add to watchlist</button>
+    <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchListClassName}" type="button">Add to watchlist</button>
     <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${alreadyWatchedClassName}" type="button">Mark as watched</button>
-    <button class="film-card__controls-item button film-card__controls-item--favorite" type="button ${favoriteClassName}">Mark as favorite</button>
+    <button class="film-card__controls-item button film-card__controls-item--favorite ${favoriteClassName}" type="button">Mark as favorite</button>
   </div>
 </article>`;
 };
