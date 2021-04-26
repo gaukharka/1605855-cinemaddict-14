@@ -101,8 +101,8 @@ export default class FilmsBoard {
       return;
     }
 
-    this._clearFilmCardList();
     this._sortFilms(sortType);
+    this._clearFilmCardList();
     this._renderFilmCardsList();
   }
 
@@ -117,6 +117,8 @@ export default class FilmsBoard {
 
   _renderSort() {
     this._filmSortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    this._renderExtraFilmCardsList(this._topRatedFilmsComponent, this._sortedByRatingFilmsArray);
+    this._renderExtraFilmCardsList(this._topCommentedFilmsComponent, this._mostCommentedFilmsArray);
   }
 
   _renderFilmCard(container, film) {
@@ -182,8 +184,6 @@ export default class FilmsBoard {
 
     this._renderSort();
     this._renderFilmCardsList();
-    this._renderExtraFilmCardsList(this._topRatedFilmsComponent, this._sortedByRatingFilmsArray);
-    this._renderExtraFilmCardsList(this._topCommentedFilmsComponent, this._mostCommentedFilmsArray);
     this._renderFooterStats();
   }
 }
