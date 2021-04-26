@@ -10,7 +10,6 @@ import FilmCardsBoardPresenter from './presenter/films-board.js';
 const MAX_CARD_COUNT = 27;
 
 const films = new Array(MAX_CARD_COUNT).fill().map(generateFilmsMock);
-console.log(films);
 const userRank = generateUserRank(films);
 const filters = generateFilmFilters(films);
 
