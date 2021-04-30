@@ -265,6 +265,8 @@ export default class Popup extends SmartView {
   setCommentSubmitHandler(callback) {
     this._callback.commentSubmit = callback;
     // this._callback.commentSubmit(Popup.parseStateToData(this._state));
+    const initialPosition = this.getElement().scrollTop;
+    this.getElement().scrollTop = initialPosition;
   }
 
   static parseStateToData(state) {
