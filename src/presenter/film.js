@@ -1,7 +1,7 @@
 import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
 import {remove, render, replace} from '../utils/render.js';
-import {isEscEvent} from '../utils/film.js';
+import {isEscEvent, isEnterEvent} from '../utils/film.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -87,6 +87,7 @@ export default class Film {
 
   _openPopup() {
     render(this._bodyElement, this._popupComponent.getElement(), 'beforeend');
+    this._popupComponent.setCloseButtonClickHandler(this._handlePopupCloseClick);
   }
 
   _handlePopupOpenClick() {
@@ -105,6 +106,7 @@ export default class Film {
 
   _closePopup() {
     remove(this._popupComponent);
+    this._popupComponent.reset();
     this._mode = Mode.DEFAULT;
   }
 
@@ -166,5 +168,19 @@ export default class Film {
         },
       ),
     );
+  }
+
+  _enterKeyDownHandler(evt) {
+    if(isEnterEvent(evt)) {
+      evt.preventDefault();
+      this._popupComponent.setCommentSubmitHandler(this._handleCommentSubmit);
+    }
+  }
+
+  _handleCommentSubmit(state) {
+    this._film.comments.push(state);
+    this._changeData(this._film);
+    this._closePopup();
+    this._openPopup();
   }
 }

@@ -58,6 +58,10 @@ export const isEscEvent = (evt) => {
   return evt.key === ('Escape' || 'Esc');
 };
 
+export const isEnterEvent = (evt) => {
+  return ((evt.ctrlKey && evt.code === 'Enter') || (evt.metaKey && evt.code === 'Enter'));
+};
+
 export const getComments = (commentsId, commentsArray) => {
   const comments = [];
 
