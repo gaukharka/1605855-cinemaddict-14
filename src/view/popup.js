@@ -1,4 +1,4 @@
-import {generateReleaseDate} from '../utils/film.js';
+import {generateReleaseDate, isEnterEvent} from '../utils/film.js';
 import SmartView from './smart.js';
 
 const Emoji = {
@@ -180,6 +180,7 @@ export default class Popup extends SmartView {
 
     this._emojiSelectHandler = this._emojiSelectHandler.bind(this);
     this._textInputHandler = this._textInputHandler.bind(this);
+    this._commentSubmitHandler = this._commentSubmitHandler.bind(this);
 
     this._setInnerChangeHandlers();
   }
@@ -221,6 +222,7 @@ export default class Popup extends SmartView {
   _favoriteClickHandler(evt) {
     evt.preventDefault();
     this._callback.favoriteClick();
+
   }
 
   setPopupFavoriteClickHandler(callback) {
@@ -243,11 +245,13 @@ export default class Popup extends SmartView {
   }
 
   _emojiSelectHandler(evt) {
+    const initialPosition = this.getElement().scrollTop;
     evt.preventDefault();
     this.updateState({
       isEmojiSelected: true,
       selectedEmoji: evt.target.value,
     });
+    this.getElement().scrollTop = initialPosition;
   }
 
   _textInputHandler(evt) {
@@ -258,20 +262,32 @@ export default class Popup extends SmartView {
   }
 
   _setInnerChangeHandlers() {
-    this.getElement().querySelector('.film-details__emoji-list').addEventListener('change', this._emojiSelectHandler);
     this.getElement().querySelector('.film-details__comment-input').addEventListener('input', this._textInputHandler);
+    this.getElement().querySelector('.film-details__emoji-list').addEventListener('change', this._emojiSelectHandler);
+  }
+
+  _commentSubmitHandler() {
+    if(this._state.isEmojiSelected){
+      return;
+    }
+    this._callback.commentSubmit(Popup.parseStateToData(this._state.comments));
+    this._film.comments.push(this._state.comments);
+  }
+
+  _enterKeyDownHandler(evt) {
+    if(isEnterEvent(evt)) {
+      evt.preventDefault();
+      this._commentSubmitHandler;
+    }
   }
 
   setCommentSubmitHandler(callback) {
     this._callback.commentSubmit = callback;
-    // this._callback.commentSubmit(Popup.parseStateToData(this._state));
-    const initialPosition = this.getElement().scrollTop;
-    this.getElement().scrollTop = initialPosition;
+    document.addEventListener('keydown', this._enterKeyDownHandler);
   }
 
   static parseStateToData(state) {
     state = Object.assign({}, state);
-
     return state;
   }
 }

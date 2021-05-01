@@ -7,7 +7,7 @@ export default class Smart extends AbstractView {
   }
 
   updateState(update, justDataUpdating) {
-    if (!update) {
+    if(!update) {
       return;
     }
 
@@ -17,7 +17,7 @@ export default class Smart extends AbstractView {
       update,
     );
 
-    if (justDataUpdating) {
+    if(justDataUpdating) {
       return;
     }
 

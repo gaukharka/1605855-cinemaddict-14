@@ -1,7 +1,7 @@
 import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
 import {remove, render, replace} from '../utils/render.js';
-import {isEscEvent, isEnterEvent} from '../utils/film.js';
+import {isEscEvent} from '../utils/film.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -26,6 +26,8 @@ export default class Film {
     this._handleWatchListClick = this._handleWatchListClick.bind(this);
     this._handleAlreadyWatchedClick = this._handleAlreadyWatchedClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+
+    this._handleCommentSubmit = this._handleCommentSubmit.bind(this);
   }
 
   init(film) {
@@ -49,6 +51,8 @@ export default class Film {
     this._popupComponent.setPopupWatchListClickHandler(this._handleWatchListClick);
     this._popupComponent.setPopupAlreadyWatchedClickHandler(this._handleAlreadyWatchedClick);
     this._popupComponent.setPopupFavoriteClickHandler(this._handleFavoriteClick);
+
+    this._popupComponent.setCommentSubmitHandler(this._handleCommentSubmit);
 
     if(prevFilmCardComponent === null) {
       render(this._container, this._filmCardComponent, 'beforeend');
@@ -96,12 +100,14 @@ export default class Film {
     this._mode = Mode.POPUP;
     document.body.classList.add('hide-overflow');
     document.addEventListener('keydown', this._escKeyDownHandler);
+    document.addEventListener('keydown', this._handleCommentSubmit);
   }
 
   _handlePopupCloseClick() {
     this._closePopup();
     document.body.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._escKeyDownHandler);
+    document.removeEventListener('keydown', this._handleCommentSubmit);
   }
 
   _closePopup() {
@@ -170,17 +176,7 @@ export default class Film {
     );
   }
 
-  _enterKeyDownHandler(evt) {
-    if(isEnterEvent(evt)) {
-      evt.preventDefault();
-      this._popupComponent.setCommentSubmitHandler(this._handleCommentSubmit);
-    }
-  }
-
-  _handleCommentSubmit(state) {
-    this._film.comments.push(state);
-    this._changeData(this._film);
-    this._closePopup();
-    this._openPopup();
+  _handleCommentSubmit() {
+    // this._changeData(this._film);
   }
 }
