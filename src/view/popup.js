@@ -222,7 +222,6 @@ export default class Popup extends SmartView {
   _favoriteClickHandler(evt) {
     evt.preventDefault();
     this._callback.favoriteClick();
-
   }
 
   setPopupFavoriteClickHandler(callback) {

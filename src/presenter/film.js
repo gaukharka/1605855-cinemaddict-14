@@ -117,6 +117,7 @@ export default class Film {
   }
 
   _handleWatchListClick() {
+    const initialPosition = this._popupComponent.getElement().scrollTop;
     const newUserDetails = Object.assign(
       {},
       this._film.userDetails,
@@ -134,9 +135,11 @@ export default class Film {
         },
       ),
     );
+    this._popupComponent.getElement().scrollTop = initialPosition;
   }
 
   _handleAlreadyWatchedClick() {
+    const initialPosition = this._popupComponent.getElement().scrollTop;
     const newUserDetails = Object.assign(
       {},
       this._film.userDetails,
@@ -154,9 +157,11 @@ export default class Film {
         },
       ),
     );
+    this._popupComponent.getElement().scrollTop = initialPosition;
   }
 
   _handleFavoriteClick() {
+    const initialPosition = this._popupComponent.getElement().scrollTop;
     const newUserDetails = Object.assign(
       {},
       this._film.userDetails,
@@ -174,6 +179,7 @@ export default class Film {
         },
       ),
     );
+    this._popupComponent.getElement().scrollTop = initialPosition;
   }
 
   _handleCommentSubmit() {
