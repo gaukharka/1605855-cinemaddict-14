@@ -9,7 +9,7 @@ const Emoji = {
 };
 
 const createPopupTemplate = (film, state) => {
-  const {isEmojiSelected, selectedEmoji, newComment} = state;
+  const {selectedEmoji, newComment} = state;
   const {comments} = film;
   const {title, alternativelTitle, runtime, poster, description, genre, rating, ageAllowance, director, writers, actors, release } = film.filmInfo;
   const {watchList, alreadyWatched, favorite} = film.userDetails;
@@ -30,7 +30,7 @@ const createPopupTemplate = (film, state) => {
   const generateComments = () => {
     return `${comments.map((comment) => `<li class="film-details__comment">
       <span class="film-details__comment-emoji">
-        <img src="${comment.emotion}" width="55" height="55" alt="emoji-smile">
+        <img src="images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-${comment.emotion}">
       </span>
       <div>
         <p class="film-details__comment-text">${comment.comment}</p>
@@ -43,7 +43,7 @@ const createPopupTemplate = (film, state) => {
     </li>`).join('')}`;
   };
 
-  const emojiRender = isEmojiSelected ? `<img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji-${selectedEmoji}"></img>` : '';
+  const emojiRender = selectedEmoji ? `<img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji-${selectedEmoji}"></img>` : '';
 
   const textRender = newComment ? newComment : '';
 
@@ -167,7 +167,6 @@ export default class Popup extends SmartView {
     super();
     this._film = film;
     this._state = {
-      isEmojiSelected: false,
       selectedEmoji: '',
       newComment: '',
     };
@@ -180,7 +179,7 @@ export default class Popup extends SmartView {
 
     this._emojiSelectHandler = this._emojiSelectHandler.bind(this);
     this._textInputHandler = this._textInputHandler.bind(this);
-    this._commentSubmitHandler = this._commentSubmitHandler.bind(this);
+    this._enterKeyDownHandler = this._enterKeyDownHandler.bind(this);
 
     this._setInnerChangeHandlers();
   }
@@ -230,11 +229,7 @@ export default class Popup extends SmartView {
   }
 
   reset() {
-    this.updateState({
-      isEmojiSelected: false,
-      selectedEmoji: '',
-      newComment: '',
-    });
+    this.updateState(this._state);
   }
 
   restoreHandlers() {
@@ -247,7 +242,6 @@ export default class Popup extends SmartView {
     const initialPosition = this.getElement().scrollTop;
     evt.preventDefault();
     this.updateState({
-      isEmojiSelected: true,
       selectedEmoji: evt.target.value,
     });
     this.getElement().scrollTop = initialPosition;
@@ -256,7 +250,7 @@ export default class Popup extends SmartView {
   _textInputHandler(evt) {
     evt.preventDefault();
     this.updateState({
-      text: evt.target.value,
+      newComment: evt.target.value,
     }, true);
   }
 
@@ -265,18 +259,15 @@ export default class Popup extends SmartView {
     this.getElement().querySelector('.film-details__emoji-list').addEventListener('change', this._emojiSelectHandler);
   }
 
-  _commentSubmitHandler() {
-    if(this._state.isEmojiSelected){
-      return;
-    }
-    this._callback.commentSubmit(Popup.parseStateToData(this._state.comments));
-    this._film.comments.push(this._state.comments);
-  }
-
   _enterKeyDownHandler(evt) {
     if(isEnterEvent(evt)) {
       evt.preventDefault();
-      this._commentSubmitHandler;
+
+      if(!this._state.selectedEmoji){
+        return;
+      }
+
+      this._callback.commentSubmit(Popup.parseStateToData(this._state));
     }
   }
 
@@ -285,8 +276,11 @@ export default class Popup extends SmartView {
     document.addEventListener('keydown', this._enterKeyDownHandler);
   }
 
-  static parseStateToData(state) {
-    state = Object.assign({}, state);
-    return state;
+  static parseStateToData(state){
+    const data = {
+      comment: state.newComment,
+      emotion: state.selectedEmoji,
+    };
+    return data;
   }
 }

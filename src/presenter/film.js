@@ -100,19 +100,19 @@ export default class Film {
     this._mode = Mode.POPUP;
     document.body.classList.add('hide-overflow');
     document.addEventListener('keydown', this._escKeyDownHandler);
-    document.addEventListener('keydown', this._handleCommentSubmit);
+    document.addEventListener('keydown', this._enterKeyDownHandler);
   }
 
   _handlePopupCloseClick() {
     this._closePopup();
     document.body.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._escKeyDownHandler);
-    document.removeEventListener('keydown', this._handleCommentSubmit);
+    document.removeEventListener('keydown', this._enterKeyDownHandler);
   }
 
   _closePopup() {
     remove(this._popupComponent);
-    this._popupComponent.reset();
+    this._popupComponent.reset(this._film.comments);
     this._mode = Mode.DEFAULT;
   }
 
@@ -182,7 +182,8 @@ export default class Film {
     this._popupComponent.getElement().scrollTop = initialPosition;
   }
 
-  _handleCommentSubmit() {
-    // this._changeData(this._film);
+  _handleCommentSubmit(state) {
+    this._film.comments.push(state);
+    this._changeData(this._film);
   }
 }
