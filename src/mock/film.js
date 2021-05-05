@@ -36,10 +36,10 @@ const POSTERS = [
 ];
 
 const EMOJI = [
-  './images/emoji/smile.png',
-  './images/emoji/sleeping.png',
-  './images/emoji/puke.png',
-  './images/emoji/angry.png',
+  'smile',
+  'sleeping',
+  'puke',
+  'angry',
 ];
 
 const GENRE = [

@@ -26,6 +26,8 @@ export default class Film {
     this._handleWatchListClick = this._handleWatchListClick.bind(this);
     this._handleAlreadyWatchedClick = this._handleAlreadyWatchedClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+
+    this._handleCommentSubmit = this._handleCommentSubmit.bind(this);
   }
 
   init(film) {
@@ -49,6 +51,8 @@ export default class Film {
     this._popupComponent.setPopupWatchListClickHandler(this._handleWatchListClick);
     this._popupComponent.setPopupAlreadyWatchedClickHandler(this._handleAlreadyWatchedClick);
     this._popupComponent.setPopupFavoriteClickHandler(this._handleFavoriteClick);
+
+    this._popupComponent.setCommentSubmitHandler(this._handleCommentSubmit);
 
     if(prevFilmCardComponent === null) {
       render(this._container, this._filmCardComponent, 'beforeend');
@@ -87,6 +91,7 @@ export default class Film {
 
   _openPopup() {
     render(this._bodyElement, this._popupComponent.getElement(), 'beforeend');
+    this._popupComponent.setCloseButtonClickHandler(this._handlePopupCloseClick);
   }
 
   _handlePopupOpenClick() {
@@ -95,20 +100,24 @@ export default class Film {
     this._mode = Mode.POPUP;
     document.body.classList.add('hide-overflow');
     document.addEventListener('keydown', this._escKeyDownHandler);
+    document.addEventListener('keydown', this._enterKeyDownHandler);
   }
 
   _handlePopupCloseClick() {
     this._closePopup();
     document.body.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._escKeyDownHandler);
+    document.removeEventListener('keydown', this._enterKeyDownHandler);
   }
 
   _closePopup() {
     remove(this._popupComponent);
+    this._popupComponent.reset(this._film.comments);
     this._mode = Mode.DEFAULT;
   }
 
   _handleWatchListClick() {
+    const initialPosition = this._popupComponent.getElement().scrollTop;
     const newUserDetails = Object.assign(
       {},
       this._film.userDetails,
@@ -126,9 +135,11 @@ export default class Film {
         },
       ),
     );
+    this._popupComponent.getElement().scrollTop = initialPosition;
   }
 
   _handleAlreadyWatchedClick() {
+    const initialPosition = this._popupComponent.getElement().scrollTop;
     const newUserDetails = Object.assign(
       {},
       this._film.userDetails,
@@ -146,9 +157,11 @@ export default class Film {
         },
       ),
     );
+    this._popupComponent.getElement().scrollTop = initialPosition;
   }
 
   _handleFavoriteClick() {
+    const initialPosition = this._popupComponent.getElement().scrollTop;
     const newUserDetails = Object.assign(
       {},
       this._film.userDetails,
@@ -166,5 +179,11 @@ export default class Film {
         },
       ),
     );
+    this._popupComponent.getElement().scrollTop = initialPosition;
+  }
+
+  _handleCommentSubmit(state) {
+    this._film.comments.push(state);
+    this._changeData(this._film);
   }
 }
