@@ -2,7 +2,7 @@ import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
 import {remove, render, replace} from '../utils/render.js';
 import {isEscEvent} from '../utils/film.js';
-import {UserAction, UpdateType, UserActionForComment} from '../const.js';
+import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -29,7 +29,7 @@ export default class Film {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
 
     this._handleCommentSubmit = this._handleCommentSubmit.bind(this);
-    this._handleCommentDelete = this._handleCommentDelete.bind(this);
+    // this._handleCommentDelete = this._handleCommentDelete.bind(this);
   }
 
   init(film) {
@@ -191,22 +191,28 @@ export default class Film {
     this._popupComponent.getElement().scrollTop = initialPosition;
   }
 
-  _handleCommentSubmit(update) {
-    this._film.comments.push(update);
+  _handleCommentSubmit(state) {
+    this._film.comments.push(state);
     this._changeData(
-      UserAction.UPDATE_FILM,
+      UserAction.ADD_COMMENT,
       UpdateType.MINOR,
-      this._film.comments,
-      update,
+      // this._film.comments,
+      Object.assign(
+        {},
+        this._film,
+        {
+          comments: state,
+        },
+      ),
     );
   }
 
-  _handleCommentDelete(film) {
-    // this._film.comments.
-    this._changeData(
-      UserAction.DELETE_FILM,
-      UpdateType.PATCH,
-      this._film.comments,
-    );
-  }
+  // _handleCommentDelete(film) {
+  //   // this._film.comments.
+  //   this._changeData(
+  //     UserAction.DELETE_FILM,
+  //     UpdateType.PATCH,
+  //     this._film.comments,
+  //   );
+  // }
 }
