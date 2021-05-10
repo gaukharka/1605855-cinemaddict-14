@@ -180,6 +180,7 @@ export default class Popup extends SmartView {
     this._emojiSelectHandler = this._emojiSelectHandler.bind(this);
     this._textInputHandler = this._textInputHandler.bind(this);
     this._enterKeyDownHandler = this._enterKeyDownHandler.bind(this);
+    this._deleteCommentButtonHandler = this._deleteCommentButtonHandler.bind(this);
 
     this._setInnerChangeHandlers();
   }
@@ -263,7 +264,7 @@ export default class Popup extends SmartView {
     if(isEnterEvent(evt)) {
       evt.preventDefault();
 
-      if(!this._state.selectedEmoji){
+      if(!this._state.selectedEmoji || !this._state.newComment){
         return;
       }
 
@@ -274,6 +275,16 @@ export default class Popup extends SmartView {
   setCommentSubmitHandler(callback) {
     this._callback.commentSubmit = callback;
     document.addEventListener('keydown', this._enterKeyDownHandler);
+  }
+
+  _deleteCommentButtonHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteCommentButtonClick();
+  }
+
+  setDeleteCommentButtonClickHandler(callback) {
+    this._callback.deleteCommentButtonClick = callback;
+    this.getElement().querySelector('.film-details__comment-delete').addEventListener('click', this._deleteCommentButtonHandler);
   }
 
   static parseStateToData(state){

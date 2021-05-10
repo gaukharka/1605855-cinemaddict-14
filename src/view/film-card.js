@@ -7,7 +7,6 @@ const isDescriptionLong = (description) => {
 };
 
 const createFilmCardTemplate = (film) => {
-
   const {comments} = film;
   const {title, runtime, release, genre, poster, description, rating} = film.filmInfo;
   const {watchList, alreadyWatched, favorite} = film.userDetails;
