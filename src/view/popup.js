@@ -18,10 +18,6 @@ const createPopupTemplate = (film, state) => {
   const stringGenre = (genre.length>=2) ? 'Genres' : 'Genre';
   const releaseDate = generateReleaseDate(release.releaseDate);
 
-  const watchListChecked = watchList ? 'checked' : '';
-  const alreadyWatchedChecked = alreadyWatched ? 'checked' : '';
-  const favoriteChecked = favorite ? 'checked' : '';
-
   const generateGenres = () => {
     return `${genre.map((value) => `<span class="film-details__genre">
     ${value}
@@ -43,10 +39,6 @@ const createPopupTemplate = (film, state) => {
       </div>
     </li>`).join('')}`;
   };
-
-  const emojiRender = selectedEmoji ? `<img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji-${selectedEmoji}"></img>` : '';
-
-  const textRender = newComment ? newComment : '';
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -110,13 +102,13 @@ const createPopupTemplate = (film, state) => {
       </div>
 
       <section class="film-details__controls">
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchListChecked}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchList ? 'checked' : ''}>
         <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${alreadyWatchedChecked}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${alreadyWatched ? 'checked' : ''}>
         <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favoriteChecked}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favorite ? 'checked' : ''}>
         <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
       </section>
     </div>
@@ -130,31 +122,31 @@ const createPopupTemplate = (film, state) => {
         </ul>
 
         <div class="film-details__new-comment">
-          <div class="film-details__add-emoji-label">${emojiRender}</div>
+          <div class="film-details__add-emoji-label">${selectedEmoji ? `<img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji-${selectedEmoji}"></img>` : ''}</div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${textRender}</textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${newComment ? newComment : ''}</textarea>
           </label>
 
           <div class="film-details__emoji-list">
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" ${selectedEmoji === Emoji.SMILE ? 'checked' : ''}>
-            <label class="film-details__emoji-label" for="emoji-smile">
-              <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${Emoji.SMILE}" value="${Emoji.SMILE}" ${selectedEmoji === Emoji.SMILE ? 'checked' : ''}>
+            <label class="film-details__emoji-label" for="emoji-${Emoji.SMILE}">
+              <img src="./images/emoji/${Emoji.SMILE}.png" width="30" height="30" alt="emoji">
             </label>
 
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping" ${selectedEmoji === Emoji.SLEEPING ? 'checked' : ''}>
-            <label class="film-details__emoji-label" for="emoji-sleeping">
-              <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${Emoji.SLEEPING}" value="${Emoji.SLEEPING}" ${selectedEmoji === Emoji.SLEEPING ? 'checked' : ''}>
+            <label class="film-details__emoji-label" for="emoji-${Emoji.SLEEPING}">
+              <img src="./images/emoji/${Emoji.SLEEPING}.png" width="30" height="30" alt="emoji">
             </label>
 
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke" ${selectedEmoji === Emoji.PUKE ? 'checked' : ''}>
-            <label class="film-details__emoji-label" for="emoji-puke">
-              <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${Emoji.PUKE}" value="${Emoji.PUKE}" ${selectedEmoji === Emoji.PUKE ? 'checked' : ''}>
+            <label class="film-details__emoji-label" for="emoji-${Emoji.PUKE}">
+              <img src="./images/emoji/${Emoji.PUKE}.png" width="30" height="30" alt="emoji">
             </label>
 
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry" ${selectedEmoji === Emoji.ANGRY ? 'checked' : ''}>
-            <label class="film-details__emoji-label" for="emoji-angry">
-              <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${Emoji.ANGRY}" value="${Emoji.ANGRY}" ${selectedEmoji === Emoji.ANGRY ? 'checked' : ''}>
+            <label class="film-details__emoji-label" for="emoji-${Emoji.ANGRY}">
+              <img src="./images/emoji/${Emoji.ANGRY}.png" width="30" height="30" alt="emoji">
             </label>
           </div>
         </div>
@@ -170,6 +162,9 @@ export default class Popup extends SmartView {
     this._state = {
       selectedEmoji: '',
       newComment: '',
+      isWatchlist: !this._film.userDetails.watchList,
+      isAlreadyWatched: !this._film.userDetails.alreadyWatched,
+      isFavorite: !this._film.userDetails.favorite,
     };
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
@@ -180,6 +175,7 @@ export default class Popup extends SmartView {
 
     this._emojiSelectHandler = this._emojiSelectHandler.bind(this);
     this._textInputHandler = this._textInputHandler.bind(this);
+
     this._enterKeyDownHandler = this._enterKeyDownHandler.bind(this);
     this._deleteCommentButtonHandler = this._deleteCommentButtonHandler.bind(this);
 
@@ -201,51 +197,84 @@ export default class Popup extends SmartView {
   }
 
   _watchListClickHandler(evt) {
+    const initialPosition = this.getElement().scrollTop;
     evt.preventDefault();
+
     this._callback.watchListClick();
+
+    this.updateState({
+      isWatchlist: evt.target.value,
+    });
+
+    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
+    this.getElement().scrollTop = initialPosition;
   }
 
   setPopupWatchListClickHandler(callback) {
     this._callback.watchListClick = callback;
-    this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('click', this._watchListClickHandler);
+    this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('change', this._watchListClickHandler);
   }
 
   _alreadyWatchedClickHandler(evt) {
+    const initialPosition = this.getElement().scrollTop;
     evt.preventDefault();
     this._callback.alreadyWatchedClick();
+
+    this.updateState({
+      isAlreadyWatched: evt.target.value,
+    });
+
+    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
+    this.getElement().scrollTop = initialPosition;
   }
 
   setPopupAlreadyWatchedClickHandler(callback) {
     this._callback.alreadyWatchedClick = callback;
-    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('click', this._alreadyWatchedClickHandler);
+    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('change', this._alreadyWatchedClickHandler);
   }
 
   _favoriteClickHandler(evt) {
+    const initialPosition = this.getElement().scrollTop;
     evt.preventDefault();
     this._callback.favoriteClick();
+
+    this.updateState({
+      isAlreadyWatched: evt.target.value,
+    });
+
+    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
+    this.getElement().scrollTop = initialPosition;
   }
 
   setPopupFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
-    this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('click', this._favoriteClickHandler);
+    this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('change', this._favoriteClickHandler);
   }
 
   reset() {
-    this.updateState(this._state);
+    this.updateState({
+      newComment: '',
+    }, true);
+
+    this.updateState({
+      selectedEmoji: '',
+    });
   }
 
   restoreHandlers() {
-    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
     this._setInnerChangeHandlers();
+    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
     this.setCommentSubmitHandler(this._callback.commentSubmit);
   }
 
   _emojiSelectHandler(evt) {
     const initialPosition = this.getElement().scrollTop;
+
     evt.preventDefault();
     this.updateState({
       selectedEmoji: evt.target.value,
     });
+
     this.getElement().scrollTop = initialPosition;
   }
 
@@ -259,8 +288,12 @@ export default class Popup extends SmartView {
   _setInnerChangeHandlers() {
     this.getElement().querySelector('.film-details__comment-input').addEventListener('input', this._textInputHandler);
     this.getElement().querySelector('.film-details__emoji-list').addEventListener('change', this._emojiSelectHandler);
+    this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('change', this._watchListClickHandler);
+    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('change', this._alreadyWatchedClickHandler);
+    this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('change', this._favoriteClickHandler);
   }
 
+  //form submit
   _enterKeyDownHandler(evt) {
     if(isEnterEvent(evt)) {
       evt.preventDefault();
@@ -292,7 +325,17 @@ export default class Popup extends SmartView {
     const data = {
       comment: state.newComment,
       emotion: state.selectedEmoji,
+      watchList: state.isWatchlist,
+      alreadyWatched: state.isAlreadyWatched,
+      favorite: state.isFavorite,
     };
+
+    delete state.newComment;
+    delete state.selectedEmoji;
+    delete state.isWatchlist;
+    delete state.isAlreadyWatched;
+    delete state.isFavorite;
+
     return data;
   }
 }

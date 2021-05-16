@@ -115,8 +115,8 @@ export default class Film {
 
   _closePopup() {
     remove(this._popupComponent);
-    this._popupComponent.reset(this._film.comments);
     this._mode = Mode.DEFAULT;
+    this._popupComponent.reset();
   }
 
   _handleWatchListClick() {
@@ -196,12 +196,12 @@ export default class Film {
     this._changeData(
       UserAction.ADD_COMMENT,
       UpdateType.MINOR,
-      // this._film.comments,
       Object.assign(
         {},
         this._film,
         {
           comments: state,
+          userDetails: state,
         },
       ),
     );
