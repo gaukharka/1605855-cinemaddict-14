@@ -203,7 +203,7 @@ const generateCommentDate = () => {
 
 const generateComment = (id) => {
   return {
-    id:  `comment${id}`,
+    id:  `${id}`,
     author: `${getRandomElement(NAME)}`,
     comment: `${getRandomElement(COMMENTS)}`,
     data: generateCommentDate(),

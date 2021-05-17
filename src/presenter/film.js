@@ -29,7 +29,7 @@ export default class Film {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
 
     this._handleCommentSubmit = this._handleCommentSubmit.bind(this);
-    // this._handleCommentDelete = this._handleCommentDelete.bind(this);
+    this._handleCommentDelete = this._handleCommentDelete.bind(this);
   }
 
   init(film) {
@@ -131,7 +131,7 @@ export default class Film {
 
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -155,7 +155,7 @@ export default class Film {
 
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -179,7 +179,7 @@ export default class Film {
 
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -194,25 +194,28 @@ export default class Film {
   _handleCommentSubmit(state) {
     this._film.comments.push(state);
     this._changeData(
-      UserAction.ADD_COMMENT,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
         {
           comments: state,
-          userDetails: state,
         },
       ),
     );
   }
 
-  // _handleCommentDelete(film) {
-  //   // this._film.comments.
-  //   this._changeData(
-  //     UserAction.DELETE_FILM,
-  //     UpdateType.PATCH,
-  //     this._film.comments,
-  //   );
-  // }
+  _handleCommentDelete(state) {
+
+    this._changeData(
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._film,
+        {
+          comments: state,
+        },
+      ),
+    );
+  }
 }
