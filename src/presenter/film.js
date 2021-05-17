@@ -205,15 +205,15 @@ export default class Film {
     );
   }
 
-  _handleCommentDelete(state) {
-
+  _handleCommentDelete(id) {
     this._changeData(
+      UserAction.UPDATE_FILM,
       UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
         {
-          comments: state,
+          comments: this._film.comments.filter((item) => item.id !== id),
         },
       ),
     );

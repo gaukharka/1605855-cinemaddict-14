@@ -293,22 +293,25 @@ export default class Popup extends SmartView {
 
   //comment delete
   _deleteCommentButtonHandler(evt) {
+    const initialPosition = this.getElement().scrollTop;
+
     evt.preventDefault();
     if (evt.target.matches('.film-details__comment-delete')) {
       const id = evt.target.closest('.film-details__comment').dataset.id;
       const comments = this._film.comments.filter((item) => item.id !== id);
 
+      this._callback.deleteCommentButtonClick(id);
+
       this.updateState({
         comments,
       });
-
-      this._callback.deleteCommentButtonClick(comments);
     }
+    this.getElement().scrollTop = initialPosition;
   }
 
   setDeleteCommentButtonClickHandler(callback) {
     this._callback.deleteCommentButtonClick = callback;
-    this.getElement().querySelector('.film-details__comment-delete').addEventListener('click', this._deleteCommentButtonHandler);
+    this.getElement().querySelector('.film-details__comments-list').addEventListener('click', this._deleteCommentButtonHandler);
   }
 
   static parseStateToData(state){

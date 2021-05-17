@@ -80,8 +80,6 @@ export default class FilmsBoard {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
-
     switch(actionType) {
       case UserAction.UPDATE_FILM:
         this._filmsModel.updateFilm(updateType, update);
@@ -90,11 +88,9 @@ export default class FilmsBoard {
   }
 
   _handleModelEvent(updateType, data) {
-    console.log(updateType, data);
     switch(updateType) {
       case UpdateType.PATCH:
         this._filmPresenter[data.id].init(data);
-        // this._filmsModel._updateSingleFilm(data);
         break;
       case UpdateType.MINOR:
         this._clearFilmCardBoard();
@@ -106,16 +102,6 @@ export default class FilmsBoard {
         break;
     }
   }
-
-  // _updateSingleFilm(data) {
-  //   Object
-  //     .values(this._filmPresenter)
-  //     .forEach((presenter) => {
-  //       if (data.id in presenter) {
-  //         presenter[data.id].init(data);
-  //       }
-  //     });
-  // }
 
   _handleSortTypeChange(sortType) {
     if (this._currentSortType === sortType) {
