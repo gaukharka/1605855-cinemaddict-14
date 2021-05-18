@@ -1,3 +1,4 @@
+import UserRankView from '../view/user-rank.js';
 import AllFilmsView from '../view/films.js';
 import FilmListMainView from '../view/films-list.js';
 import NoFilms from '../view/no-films.js';
@@ -16,9 +17,10 @@ const FILMS_DISPLAY_STEP = 5;
 const MIN_CARD_COUNT = 2;
 const ZERO_FILMS = 0;
 export default class FilmsBoard {
-  constructor(bodyElement, mainElement, footerElement, filmsModel, filterModel) {
+  constructor(headerElement, bodyElement, mainElement, footerElement, filmsModel, filterModel) {
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
+    this._headerElement = headerElement;
     this._bodyElement = bodyElement;
     this._mainElement = mainElement;
     this._footerElement = footerElement;
@@ -39,6 +41,7 @@ export default class FilmsBoard {
     this._filmListMainComponent = new FilmListMainView();
     this._noFilmsComponent = new NoFilms();
     this._footerStatsComponent = new FooterStatsView();
+    this._userRankComponent = new UserRankView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -208,18 +211,23 @@ export default class FilmsBoard {
   _renderFooterStats() {
     if(this._getFilms().length === 0){
       this._renderNoFilms();
-      render(this._footerElement, this._footerStatsComponent.getElement(ZERO_FILMS), 'beforeend');
+      render(this._footerElement, new FooterStatsView(ZERO_FILMS), 'beforeend');
       remove(this._topRatedFilmsComponent);
       remove(this._topCommentedFilmsComponent);
     }
 
     this._renderExtraFilms();
-    render(this._footerElement, this._footerStatsComponent.getElement(this._getFilms().length), 'beforeend');
+    render(this._footerElement, new FooterStatsView(this._getFilms().length), 'beforeend');
+  }
+
+  _renderUserRank() {
+    render(this._headerElement, new UserRankView(this._getFilms()), 'beforeend');
   }
 
   _renderFilmCardBoard() {
     const films = this._getFilms();
     const filmsCount = films.length;
+    this._renderUserRank();
     this._renderSort();
     this._renderFooterStats();
 

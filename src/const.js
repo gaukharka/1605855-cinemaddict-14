@@ -22,3 +22,16 @@ export const FilterType = {
   HISTORY: 'History',
   FAVORITES: 'Favorites',
 };
+
+export const MenuItem = {
+  FILMS: 'Films',
+  STATS: 'Stats',
+};
+
+export const StatsFilter = {
+  ALL_TIME: 'All time',
+  TODAY: 'Today',
+  WEEK: 'Week',
+  MONTH: 'Month',
+  YEAR: 'Year',
+};
