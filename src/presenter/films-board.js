@@ -33,6 +33,7 @@ export default class FilmsBoard {
 
     this._topRatedFilmsComponent = null;
     this._topCommentedFilmsComponent = null;
+    this._userRankComponent = null;
 
     this._sortedByRatingFilmsArray = this._filmsModel.getFilms().slice().sort(generateSortedByRatingFilms);
     this._mostCommentedFilmsArray = this._filmsModel.getFilms().slice().sort(compareComments);
@@ -57,6 +58,7 @@ export default class FilmsBoard {
   init() {
     render(this._mainElement, this._allFilmsComponent, 'beforeend');
     render(this._allFilmsComponent, this._filmListMainComponent, 'beforeend');
+    render(this._headerElement, new UserRankView(this._filmsModel.getFilms().slice()), 'beforeend');
 
     this._renderFilmCardBoard();
   }
@@ -220,14 +222,9 @@ export default class FilmsBoard {
     render(this._footerElement, new FooterStatsView(this._getFilms().length), 'beforeend');
   }
 
-  _renderUserRank() {
-    render(this._headerElement, new UserRankView(this._getFilms()), 'beforeend');
-  }
-
   _renderFilmCardBoard() {
     const films = this._getFilms();
     const filmsCount = films.length;
-    this._renderUserRank();
     this._renderSort();
     this._renderFooterStats();
 
