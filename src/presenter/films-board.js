@@ -15,7 +15,6 @@ import {SortType, UserAction, UpdateType} from '../const.js';
 
 const FILMS_DISPLAY_STEP = 5;
 const MIN_CARD_COUNT = 2;
-const ZERO_FILMS = 0;
 export default class FilmsBoard {
   constructor(headerElement, bodyElement, mainElement, footerElement, filmsModel, filterModel) {
     this._filmsModel = filmsModel;
@@ -59,6 +58,7 @@ export default class FilmsBoard {
     render(this._mainElement, this._allFilmsComponent, 'beforeend');
     render(this._allFilmsComponent, this._filmListMainComponent, 'beforeend');
     render(this._headerElement, new UserRankView(this._filmsModel.getFilms().slice()), 'beforeend');
+    render(this._footerElement, new FooterStatsView(this._getFilms().length), 'beforeend');
 
     this._renderFilmCardBoard();
   }
@@ -210,23 +210,16 @@ export default class FilmsBoard {
     render(this._allFilmsComponent, this._topCommentedFilmsComponent, 'beforeend');
   }
 
-  _renderFooterStats() {
-    if(this._getFilms().length === 0){
-      this._renderNoFilms();
-      render(this._footerElement, new FooterStatsView(ZERO_FILMS), 'beforeend');
-      remove(this._topRatedFilmsComponent);
-      remove(this._topCommentedFilmsComponent);
-    }
-
-    this._renderExtraFilms();
-    render(this._footerElement, new FooterStatsView(this._getFilms().length), 'beforeend');
-  }
-
   _renderFilmCardBoard() {
     const films = this._getFilms();
     const filmsCount = films.length;
+
+    if(filmsCount === 0){
+      this._renderNoFilms();
+    }
+
     this._renderSort();
-    this._renderFooterStats();
+    this._renderExtraFilms();
 
     this._renderFilmCards(films.slice(0, Math.min(filmsCount, this._displayedFilms)));
     if(filmsCount > this._displayedFilms) {
