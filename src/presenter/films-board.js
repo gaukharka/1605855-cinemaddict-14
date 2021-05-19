@@ -1,4 +1,3 @@
-import UserRankView from '../view/user-rank.js';
 import AllFilmsView from '../view/films.js';
 import FilmListMainView from '../view/films-list.js';
 import NoFilms from '../view/no-films.js';
@@ -6,7 +5,6 @@ import FilmSortingView from '../view/film-sorting';
 import TopRatedFilmsView from '../view/top-rated-films.js';
 import TopCommentedFilmsView from '../view/most-commented-films.js';
 import LoadMoreButtonView from '../view/load-more-button.js';
-import FooterStatsView from '../view/footer-stats.js';
 import FilmPresenter from './film.js';
 import {render, remove} from '../utils/render.js';
 import {filter} from '../utils/filters.js';
@@ -16,23 +14,22 @@ import {SortType, UserAction, UpdateType} from '../const.js';
 const FILMS_DISPLAY_STEP = 5;
 const MIN_CARD_COUNT = 2;
 export default class FilmsBoard {
-  constructor(headerElement, bodyElement, mainElement, footerElement, filmsModel, filterModel) {
+  constructor(bodyElement, mainElement, filmsModel, filterModel) {
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
-    this._headerElement = headerElement;
     this._bodyElement = bodyElement;
     this._mainElement = mainElement;
-    this._footerElement = footerElement;
     this._displayedFilms = FILMS_DISPLAY_STEP;
     this._currentSortType = SortType.DEFAULT;
     this._filmPresenter = {};
 
+    // this._allFilmsComponent = null;
+    // this._filmListMainComponent = null;
     this._filmSortingComponent = null;
     this._loadMoreButtonComponent = null;
 
     this._topRatedFilmsComponent = null;
     this._topCommentedFilmsComponent = null;
-    this._userRankComponent = null;
 
     this._sortedByRatingFilmsArray = this._filmsModel.getFilms().slice().sort(generateSortedByRatingFilms);
     this._mostCommentedFilmsArray = this._filmsModel.getFilms().slice().sort(compareComments);
@@ -40,8 +37,6 @@ export default class FilmsBoard {
     this._allFilmsComponent = new AllFilmsView();
     this._filmListMainComponent = new FilmListMainView();
     this._noFilmsComponent = new NoFilms();
-    this._footerStatsComponent = new FooterStatsView();
-    this._userRankComponent = new UserRankView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -49,18 +44,25 @@ export default class FilmsBoard {
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-
-    this._filmsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
     render(this._mainElement, this._allFilmsComponent, 'beforeend');
     render(this._allFilmsComponent, this._filmListMainComponent, 'beforeend');
-    render(this._headerElement, new UserRankView(this._filmsModel.getFilms().slice()), 'beforeend');
-    render(this._footerElement, new FooterStatsView(this._getFilms().length), 'beforeend');
+    this._filmsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
 
     this._renderFilmCardBoard();
+  }
+
+  destroy() {
+    this._clearFilmCardBoard({resetDisplayedFilmCount: true, resetSortType: true});
+
+    remove(this._allFilmsComponent);
+    remove(this._filmListMainComponent);
+
+    this._filmsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   _getFilms() {

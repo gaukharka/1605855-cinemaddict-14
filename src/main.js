@@ -1,7 +1,8 @@
 import StatsView from './view/stats.js';
-import SiteMenuView from './view/site-menu.js';
+import UserRankView from './view/user-rank.js';
+import FooterStatsView from './view/footer-stats.js';
 import {generateFilmsMock} from './mock/film.js';
-import {render} from './utils/render.js';
+import {remove, render} from './utils/render.js';
 import FilmCardsBoardPresenter from './presenter/films-board.js';
 import FilterPresenter from './presenter/filter.js';
 import FilmsModel from './model/films-model.js';
@@ -16,38 +17,38 @@ const mainElement = bodyElement.querySelector('.main');
 const footer = bodyElement.querySelector('.footer');
 const footerElement = footer.querySelector('.footer__statistics');
 
-// const siteMenuComponent = new SiteMenuView();
-// const statsComponent = new StatsView();
-
-// Render User Rank, Menu
-// render(headerElement, siteMenuComponent, 'beforeend');
+// let footerStatsComponent = new FooterStatsView();
+// let userRankComponent = new UserRankView();
+let statsComponent = null;
+// footerStatsComponent = null;
+// userRankComponent = null;
 
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(films);
 
 const filterModel = new FilterModel();
 
-// const handleSiteMenuClick = (menuItem) => {
-//   switch(menuItem) {
-//     case MenuItem.FILMS:
-//       // dddfd
-//       break;
-//     case MenuItem.STATS:
-//       // dddd
-//       break;
-//   }
-// };
+const handleSiteMenuClick = (menuItem) => {
+  switch(menuItem) {
+    case MenuItem.FILMS:
+      remove(statsComponent);
+      filmsCardsBoardPresenter.destroy();
+      filmsCardsBoardPresenter.init();
+      break;
+    case MenuItem.STATS:
+      filmsCardsBoardPresenter.destroy();
+      statsComponent = new StatsView(filmsModel.getFilms());
+      render(mainElement, statsComponent, 'beforeend');
+      break;
+  }
+};
 
-// siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-
-// Render Stats
-// siteMenuView.setStatsClickHandler(() => {
-//   render(mainElement, new StatsView(films), RenderPosition.AFTERBEGIN);
-// });
+render(headerElement, new UserRankView(filmsModel.getFilms()), 'beforeend');
+render(footerElement, new FooterStatsView(filmsModel.getFilms().length), 'beforeend');
 
 //start
-const filterPresenter = new FilterPresenter(mainElement, filterModel, filmsModel);
-const filmsCardsBoardPresenter = new FilmCardsBoardPresenter(headerElement, bodyElement, mainElement, footerElement, filmsModel, filterModel);
+const filterPresenter = new FilterPresenter(mainElement, filterModel, filmsModel, handleSiteMenuClick);
+const filmsCardsBoardPresenter = new FilmCardsBoardPresenter(bodyElement, mainElement, filmsModel, filterModel);
 
 filterPresenter.init();
 filmsCardsBoardPresenter.init();
