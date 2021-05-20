@@ -55,16 +55,6 @@ export default class FilmsBoard {
     this._renderFilmCardBoard();
   }
 
-  destroy() {
-    this._clearFilmCardBoard({resetDisplayedFilmCount: true, resetSortType: true});
-
-    remove(this._allFilmsComponent);
-    remove(this._filmListMainComponent);
-
-    this._filmsModel.removeObserver(this._handleModelEvent);
-    this._filterModel.removeObserver(this._handleModelEvent);
-  }
-
   _getFilms() {
     const filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getFilms().slice();

@@ -11,6 +11,4 @@ export const generateMinutes = (duration) => {
   return `${minutes}`;
 };
 
-export const generateWatchedFilmsArray = (films) => {
-  films.filter((film) => film.userDetails.alreadyWatched);
-};
+export const makeItemsUniq = (items) => [...new Set(items)];

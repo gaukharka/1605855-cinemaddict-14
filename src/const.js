@@ -29,9 +29,9 @@ export const MenuItem = {
 };
 
 export const StatsFilter = {
-  ALL_TIME: 'All time',
-  TODAY: 'Today',
-  WEEK: 'Week',
-  MONTH: 'Month',
-  YEAR: 'Year',
+  ALL_TIME: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
 };

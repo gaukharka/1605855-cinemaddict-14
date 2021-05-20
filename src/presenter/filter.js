@@ -1,16 +1,17 @@
+import StatsView from '../view/stats.js';
 import FilterView from '../view/site-menu.js';
 import {render, replace, remove} from '../utils/render.js';
 import {filter} from '../utils/filters.js';
 import {FilterType, MenuItem, UpdateType} from '../const.js';
 
 export default class Filter {
-  constructor(mainContainer, filterModel, filmsModel, selectMenuType) {
-    this.mainContainer = mainContainer;
+  constructor(mainContainer, filterModel, filmsModel, filmsBoard) {
+    this._mainContainer = mainContainer;
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
-    this._selectMenuType = selectMenuType;
+    this._filmsBoard = filmsBoard;
 
-    this._currentMenuType = MenuItem.FILMS;
+    this._statsComponent = null;
     this._currentFilter = null;
     this._filterComponent = null;
 
@@ -26,12 +27,12 @@ export default class Filter {
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
 
-    this._filterComponent = new FilterView(filters, this._filterModel.getFilter(), this._currentMenuType);
+    this._filterComponent = new FilterView(filters, this._filterModel.getFilter());
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
     this._filterComponent.setStatsClickHandler(this._handleStatClick);
 
     if(prevFilterComponent === null) {
-      render(this.mainContainer, this._filterComponent, 'beforeend');
+      render(this._mainContainer, this._filterComponent, 'beforeend');
       return;
     }
 
@@ -44,24 +45,21 @@ export default class Filter {
   }
 
   _handleFilterTypeChange(filterType) {
-    if (this._filterModel.getFilter() === filterType && this._currentMenuType === MenuItem.FILMS) {
+    if (this._filterModel.getFilter() === filterType) {
       return;
     }
 
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
-    this._selectMenuType(MenuItem.FILMS);
-    this._currentMenuType = MenuItem.FILMS;
-    this.init();
+
+    if(filterType === MenuItem.STATS) {
+      this._statsComponent = new StatsView(this._filmsModel.getFilms());
+      render(this._mainContainer, this._statsComponent, 'beforeend');
+    } else {
+      remove(this._statsComponent);
+    }
   }
 
   _handleStatClick() {
-    if(this._currentMenuType === MenuItem.STATS) {
-      return;
-    }
-
-    this._selectMenuType(MenuItem.STATS);
-    this._currentMenuType = MenuItem.STATS;
-    this.init;
   }
 
   _getFilters() {
