@@ -49,10 +49,20 @@ export default class FilmsBoard {
   init() {
     render(this._mainElement, this._allFilmsComponent, 'beforeend');
     render(this._allFilmsComponent, this._filmListMainComponent, 'beforeend');
+
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
     this._renderFilmCardBoard();
+  }
+
+  destroy() {
+    this._clearFilmCardBoard({resetDisplayedFilmCount: true, resetSortType: true});
+
+    remove(this._allFilmsComponent);
+
+    this._filmsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   _getFilms() {

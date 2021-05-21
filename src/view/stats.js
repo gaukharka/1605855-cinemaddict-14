@@ -176,6 +176,7 @@ export default class Stats extends SmartView {
       films: this._films,
       currentPeriod: StatsFilter.ALL_TIME,  // month, year, week worked, today not working
     };
+
     this._chart = null;
     this._handleFilterChange = this._handleFilterChange.bind(this);
     this._setInnerChangeHandlers();
@@ -195,6 +196,13 @@ export default class Stats extends SmartView {
 
   _setInnerChangeHandlers() {
     this.getElement().querySelector('.statistic__filters').addEventListener('change', this._handleFilterChange);
+  }
+
+  removeElement() {
+    super.removeElement();
+    if (this._chart !== null) {
+      this._chart = null;
+    }
   }
 
   restoreHandlers() {

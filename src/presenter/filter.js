@@ -1,18 +1,15 @@
-import StatsView from '../view/stats.js';
 import FilterView from '../view/site-menu.js';
 import {render, replace, remove} from '../utils/render.js';
 import {filter} from '../utils/filters.js';
 import {FilterType, MenuItem, UpdateType} from '../const.js';
-
 export default class Filter {
-  constructor(mainContainer, filterModel, filmsModel, filmsBoard) {
-    this._mainContainer = mainContainer;
+  constructor(mainContainer, filterModel, filmsModel, selectMenuType) {
+    this.mainContainer = mainContainer;
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
-    this._filmsBoard = filmsBoard;
+    this._selectMenuType = selectMenuType;
 
-    this._statsComponent = null;
-    this._currentFilter = null;
+    this._currentMenuType = MenuItem.FILMS;
     this._filterComponent = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -27,12 +24,12 @@ export default class Filter {
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
 
-    this._filterComponent = new FilterView(filters, this._filterModel.getFilter());
+    this._filterComponent = new FilterView(filters, this._filterModel.getFilter(), this._currentMenuType);
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
     this._filterComponent.setStatsClickHandler(this._handleStatClick);
 
     if(prevFilterComponent === null) {
-      render(this._mainContainer, this._filterComponent, 'beforeend');
+      render(this.mainContainer, this._filterComponent, 'beforeend');
       return;
     }
 
@@ -45,21 +42,24 @@ export default class Filter {
   }
 
   _handleFilterTypeChange(filterType) {
-    if (this._filterModel.getFilter() === filterType) {
+    if (this._filterModel.getFilter() === filterType && this._currentMenuType === MenuItem.FILMS) {
       return;
     }
 
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
-
-    if(filterType === MenuItem.STATS) {
-      this._statsComponent = new StatsView(this._filmsModel.getFilms());
-      render(this._mainContainer, this._statsComponent, 'beforeend');
-    } else {
-      remove(this._statsComponent);
-    }
+    this._selectMenuType(MenuItem.FILMS);
+    this._currentMenuType = MenuItem.FILMS;
+    this.init();
   }
 
   _handleStatClick() {
+    if(this._currentMenuType === MenuItem.STATS) {
+      return;
+    }
+
+    this._selectMenuType(MenuItem.STATS);
+    this._currentMenuType = MenuItem.STATS;
+    this.init;
   }
 
   _getFilters() {
