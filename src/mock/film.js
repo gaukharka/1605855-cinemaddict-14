@@ -139,7 +139,7 @@ const NAME = [
 ];
 
 export const getRandomDate = () => {
-  return dayjs.between('2020-01-01', '2021-06-21');   // year-month-day
+  return dayjs.between('2021-04-01', '2021-05-22');   // year-month-day
 };
 
 export const generateReleaseDate = (date) => {

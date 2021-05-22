@@ -9,7 +9,7 @@ import FilmsModel from './model/films-model.js';
 import FilterModel from './model/filters-model.js';
 import { MenuItem } from './const.js';
 
-const MAX_CARD_COUNT = 12;
+const MAX_CARD_COUNT = 32;
 const films = new Array(MAX_CARD_COUNT).fill().map(generateFilmsMock);
 const bodyElement = document.querySelector('body');
 const headerElement = bodyElement.querySelector('.header');
@@ -31,6 +31,7 @@ const handleSiteMenuClick = (menuItem) => {
       filmsCardsBoardPresenter.init();
       break;
     case MenuItem.STATS:
+      remove(statsComponent);
       filmsCardsBoardPresenter.destroy();
       statsComponent = new StatsView(filmsModel.getFilms());
       render(mainElement, statsComponent, 'beforeend');

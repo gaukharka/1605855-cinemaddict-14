@@ -1,10 +1,10 @@
 import SmartView from './smart.js';
-import Chart from 'chart.js';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {generateHour, generateMinutes, makeItemsUniq} from '../utils/stats.js';
 import {generateUserRank} from '../mock/rank.js';
 import {StatsFilter} from '../const.js';
 import dayjs from 'dayjs';
+import Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 const calculateGenres = (films) => {
 
@@ -20,22 +20,18 @@ const calculateGenres = (films) => {
   return sortedFilms ? sortedFilms : [];
 };
 
-export const generateFilteredFilms = ({films, currentPeriod}) => {
-
+export const generateFilteredFilms = (state) => {
+  const {films, currentPeriod} = state;
   const watchedFilms = films.filter((film) => film.userDetails.alreadyWatched);
   if (currentPeriod === StatsFilter.ALL_TIME) {
     return watchedFilms;
   }
 
-  return watchedFilms
-    .slice()
-    .filter((film) => dayjs(film.userDetails.watchingDate).isSame(dayjs(), currentPeriod));
+  return watchedFilms.slice().filter((film) =>  dayjs(film.userDetails.watchingDate).isSame(dayjs(), currentPeriod));
 };
 
-const createStatsChart = (statisticCtx, data) => {
+const createStatsChart = (statisticCtx, filteredFilms) => {
 
-  const filteredFilms = generateFilteredFilms(data);
-  console.log(filteredFilms)
   const genresCount = calculateGenres(filteredFilms);
   const genres = genresCount.map((genresCount) => genresCount.genre);
   const count = genresCount.map((genresCount) => genresCount.count);
@@ -101,13 +97,9 @@ const createStatsChart = (statisticCtx, data) => {
   });
 };
 
-const createStatsTemplate = (data) => {
+const createStatsTemplate = (state, filteredFilms) => {
 
-  const {currentPeriod} = data;
-  const filteredFilms = generateFilteredFilms(data);
-  const newD = dayjs();
-  console.log(newD)
-  // console.log(filteredFilms);
+  const {currentPeriod} = state;
   const userRank = generateUserRank(filteredFilms);
   const history = filteredFilms.length;
   const runtimeArray = filteredFilms.map((film) => film.filmInfo.runtime);
@@ -118,8 +110,6 @@ const createStatsTemplate = (data) => {
   const getTopGenre = filteredFilms.length ? genreArray
     .slice()
     .sort((genreA, genreB) => genreArray.filter((film) => film===genreA).length - genreArray.filter((film) => film===genreB).length).pop() : '';
-  // console.log(genreArray)
-  // console.log(getTopGenre)
 
   return `<section class="statistic">
   <p class="statistic__rank">
@@ -130,19 +120,19 @@ const createStatsTemplate = (data) => {
 
   <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
     <p class="statistic__filters-description">Show stats:</p>
-    <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${StatsFilter.ALL_TIME}" value="${StatsFilter.ALL_TIME}" ${currentPeriod === StatsFilter.ALL_TIME ? ' checked' : ''}>
+    <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="${StatsFilter.ALL_TIME}" ${currentPeriod === StatsFilter.ALL_TIME ? ' checked' : ''}>
     <label for="statistic-all-time" class="statistic__filters-label">All time</label>
 
-    <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${StatsFilter.TODAY}" value="${StatsFilter.TODAY}" ${currentPeriod === StatsFilter.TODAY ? ' checked' : ''}>
+    <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="${StatsFilter.TODAY}" ${currentPeriod === StatsFilter.TODAY ? ' checked' : ''}>
     <label for="statistic-today" class="statistic__filters-label">Today</label>
 
-    <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${StatsFilter.WEEK}" value="${StatsFilter.WEEK}" ${currentPeriod === StatsFilter.WEEK ? ' checked' : ''}>
+    <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="${StatsFilter.WEEK}" ${currentPeriod === StatsFilter.WEEK ? ' checked' : ''}>
     <label for="statistic-week" class="statistic__filters-label">Week</label>
 
-    <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${StatsFilter.MONTH}" value="${StatsFilter.MONTH}" ${currentPeriod === StatsFilter.MONTH ? ' checked' : ''}>
+    <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="${StatsFilter.MONTH}" ${currentPeriod === StatsFilter.MONTH ? ' checked' : ''}>
     <label for="statistic-month" class="statistic__filters-label">Month</label>
 
-    <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${StatsFilter.YEAR}" value="${StatsFilter.YEAR}" ${currentPeriod === StatsFilter.YEAR ? ' checked' : ''}>
+    <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="${StatsFilter.YEAR}" ${currentPeriod === StatsFilter.YEAR ? ' checked' : ''}>
     <label for="statistic-year" class="statistic__filters-label">Year</label>
   </form>
 
@@ -171,20 +161,25 @@ const createStatsTemplate = (data) => {
 export default class Stats extends SmartView {
   constructor(films) {
     super();
-    this._films = films;
-    this._data = {
+    this._films = films.slice();
+    this._state = {
       films: this._films,
-      currentPeriod: StatsFilter.ALL_TIME,  // month, year, week worked, today not working
+      currentPeriod: StatsFilter.ALL_TIME,
     };
 
     this._chart = null;
     this._handleFilterChange = this._handleFilterChange.bind(this);
-    this._setInnerChangeHandlers();
+
     this._setChart();
+    this._setInnerChangeHandlers();
   }
 
   getTemplate() {
-    return createStatsTemplate(this._data);
+    return createStatsTemplate(this._state, this._getFilteredFilms());
+  }
+
+  _getFilteredFilms() {
+    return generateFilteredFilms(this._state);
   }
 
   _handleFilterChange(evt){
@@ -200,6 +195,7 @@ export default class Stats extends SmartView {
 
   removeElement() {
     super.removeElement();
+
     if (this._chart !== null) {
       this._chart = null;
     }
@@ -216,6 +212,6 @@ export default class Stats extends SmartView {
     }
 
     const statisticCtx = this.getElement().querySelector('.statistic__chart');
-    this._chart = createStatsChart(statisticCtx, this._data);
+    this._chart = createStatsChart(statisticCtx, this._getFilteredFilms());
   }
 }

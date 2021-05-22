@@ -32,7 +32,6 @@ export default class SiteMenu extends AbstractView {
     this._filters = filters;
     this._currentFilterType = currentFilterType;
     this._currentMenuType = currentMenuType;
-    console.log(this._currentMenuType)
 
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
     this._statsClickHandler= this._statsClickHandler.bind(this);
