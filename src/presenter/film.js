@@ -206,6 +206,7 @@ export default class Film {
   }
 
   _handleCommentDelete(id) {
+    const initialPosition = this._popupComponent.getElement().scrollTop;
     this._changeData(
       UserAction.UPDATE_FILM,
       UpdateType.PATCH,
@@ -217,5 +218,6 @@ export default class Film {
         },
       ),
     );
+    this._popupComponent.getElement().scrollTop = initialPosition;
   }
 }

@@ -267,7 +267,6 @@ export default class Popup extends SmartView {
   //comment submit
   _enterKeyDownHandler(evt) {
     const initialPosition = this.getElement().scrollTop;
-
     if(isEnterEvent(evt)) {
       evt.preventDefault();
 
@@ -275,9 +274,10 @@ export default class Popup extends SmartView {
         return;
       }
 
-      this._callback.commentSubmit(Popup.parseStateToData(this._state));
+      this._callback.commentSubmit(Popup.parseStateToData(this._film, this._state));
 
       this.updateState({
+        id: '',
         newComment: '',
         selectedEmoji: '',
       });
@@ -286,27 +286,24 @@ export default class Popup extends SmartView {
     this.getElement().scrollTop = initialPosition;
   }
 
-  setCommentSubmitHandler(callback) {
-    this._callback.commentSubmit = callback;
-    document.addEventListener('keydown', this._enterKeyDownHandler);
-  }
-
   //comment delete
   _deleteCommentButtonHandler(evt) {
-    const initialPosition = this.getElement().scrollTop;
-
     evt.preventDefault();
+
     if (evt.target.matches('.film-details__comment-delete')) {
       const id = evt.target.closest('.film-details__comment').dataset.id;
       const comments = this._film.comments.filter((item) => item.id !== id);
-
       this._callback.deleteCommentButtonClick(id);
 
       this.updateState({
         comments,
       });
     }
-    this.getElement().scrollTop = initialPosition;
+  }
+
+  setCommentSubmitHandler(callback) {
+    this._callback.commentSubmit = callback;
+    document.addEventListener('keydown', this._enterKeyDownHandler);
   }
 
   setDeleteCommentButtonClickHandler(callback) {
@@ -314,12 +311,16 @@ export default class Popup extends SmartView {
     this.getElement().querySelector('.film-details__comments-list').addEventListener('click', this._deleteCommentButtonHandler);
   }
 
-  static parseStateToData(state){
+  static parseStateToData(film, state){
+    const length = film.comments[film.comments.length - 1];
+    const id = Number(length.id);
     const data = {
+      id: String(id+1),
       comment: state.newComment,
       emotion: state.selectedEmoji,
     };
 
+    delete state.id;
     delete state.newComment;
     delete state.selectedEmoji;
 

@@ -23,8 +23,6 @@ export default class FilmsBoard {
     this._currentSortType = SortType.DEFAULT;
     this._filmPresenter = {};
 
-    // this._allFilmsComponent = null;
-    // this._filmListMainComponent = null;
     this._filmSortingComponent = null;
     this._loadMoreButtonComponent = null;
 
@@ -87,10 +85,8 @@ export default class FilmsBoard {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    switch(actionType) {
-      case UserAction.UPDATE_FILM:
-        this._filmsModel.updateFilm(updateType, update);
-        break;
+    if (actionType === UserAction.UPDATE_FILM) {
+      this._filmsModel.updateFilm(updateType, update);
     }
   }
 
@@ -121,7 +117,7 @@ export default class FilmsBoard {
   }
 
   _renderSort() {
-    if(this._filmSortingComponent !== null) {
+    if (this._filmSortingComponent) {
       this._filmSortingComponent = null;
     }
 
@@ -152,13 +148,13 @@ export default class FilmsBoard {
     this._renderFilmCards(films);
     this._displayedFilms = newRenderedFilmsCount;
 
-    if(this._displayedFilms >= filmsCount){
+    if (this._displayedFilms >= filmsCount) {
       remove(this._loadMoreButtonComponent);
     }
   }
 
   _renderLoadMoreButton() {
-    if(this._loadMoreButtonComponent !== null) {
+    if (this._loadMoreButtonComponent) {
       this._loadMoreButtonComponent = null;
     }
 
@@ -182,20 +178,20 @@ export default class FilmsBoard {
     remove(this._topRatedFilmsComponent);
     remove(this._topCommentedFilmsComponent);
 
-    if(resetDisplayedFilmCount) {
+    if (resetDisplayedFilmCount) {
       this._displayedFilms = FILMS_DISPLAY_STEP;
     } else {
       this._displayedFilms = Math.min(filmCount, this._displayedFilms);
     }
 
-    if(resetSortType) {
+    if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;
     }
   }
 
   _renderExtraFilmCardsList(container, films) {
     for(let i=0; i< MIN_CARD_COUNT; i++){
-      if(films !==0){
+      if (films !==0) {
         this._renderFilmCard(container.getContainer(), films[i]);
       }
     }
@@ -216,7 +212,7 @@ export default class FilmsBoard {
     const films = this._getFilms();
     const filmsCount = films.length;
 
-    if(filmsCount === 0){
+    if (filmsCount === 0) {
       this._renderNoFilms();
     }
 
@@ -224,7 +220,7 @@ export default class FilmsBoard {
     this._renderExtraFilms();
 
     this._renderFilmCards(films.slice(0, Math.min(filmsCount, this._displayedFilms)));
-    if(filmsCount > this._displayedFilms) {
+    if (filmsCount > this._displayedFilms) {
       this._renderLoadMoreButton();
     }
   }

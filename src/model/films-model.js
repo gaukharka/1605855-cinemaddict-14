@@ -3,7 +3,7 @@ import Observer from '../utils/observer';
 export default class Films extends Observer {
   constructor() {
     super();
-    this._films= [];
+    this._films = [];
     this._comments = [];
   }
 

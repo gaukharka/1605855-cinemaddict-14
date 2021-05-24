@@ -28,7 +28,7 @@ export default class Filter {
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
     this._filterComponent.setStatsClickHandler(this._handleStatClick);
 
-    if(prevFilterComponent === null) {
+    if (!prevFilterComponent) {
       render(this.mainContainer, this._filterComponent, 'beforeend');
       return;
     }
@@ -53,7 +53,7 @@ export default class Filter {
   }
 
   _handleStatClick() {
-    if(this._currentMenuType === MenuItem.STATS) {
+    if (this._currentMenuType === MenuItem.STATS) {
       return;
     }
 
