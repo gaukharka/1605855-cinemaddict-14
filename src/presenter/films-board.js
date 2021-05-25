@@ -5,6 +5,7 @@ import FilmSortingView from '../view/film-sorting';
 import TopRatedFilmsView from '../view/top-rated-films.js';
 import TopCommentedFilmsView from '../view/most-commented-films.js';
 import LoadMoreButtonView from '../view/load-more-button.js';
+import LoadingView from '../view/loading.js';
 import FilmPresenter from './film.js';
 import {render, remove} from '../utils/render.js';
 import {filter} from '../utils/filters.js';
@@ -14,7 +15,7 @@ import {SortType, UserAction, UpdateType} from '../const.js';
 const FILMS_DISPLAY_STEP = 5;
 const MIN_CARD_COUNT = 2;
 export default class FilmsBoard {
-  constructor(bodyElement, mainElement, filmsModel, filterModel) {
+  constructor(bodyElement, mainElement, filmsModel, filterModel, api) {
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
     this._bodyElement = bodyElement;
@@ -22,6 +23,8 @@ export default class FilmsBoard {
     this._displayedFilms = FILMS_DISPLAY_STEP;
     this._currentSortType = SortType.DEFAULT;
     this._filmPresenter = {};
+    this._isLoading = true;
+    this._api = api;
 
     this._filmSortingComponent = null;
     this._loadMoreButtonComponent = null;
@@ -35,6 +38,7 @@ export default class FilmsBoard {
     this._allFilmsComponent = new AllFilmsView();
     this._filmListMainComponent = new FilmListMainView();
     this._noFilmsComponent = new NoFilms();
+    this._loadingComponent = new LoadingView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -86,7 +90,9 @@ export default class FilmsBoard {
 
   _handleViewAction(actionType, updateType, update) {
     if (actionType === UserAction.UPDATE_FILM) {
-      this._filmsModel.updateFilm(updateType, update);
+      this._api.updateFilms(update).then((response) => {
+        this._filmsModel.updateFilm(updateType, response);
+      });
     }
   }
 
@@ -101,6 +107,11 @@ export default class FilmsBoard {
         break;
       case UpdateType.MAJOR:
         this._clearFilmCardBoard({resetDisplayedFilmCount: true, resetSortType: true});
+        this._renderFilmCardBoard();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
         this._renderFilmCardBoard();
         break;
     }
@@ -123,7 +134,7 @@ export default class FilmsBoard {
 
     this._filmSortingComponent = new FilmSortingView(this._currentSortType);
     this._filmSortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
-    render(this._allFilmsComponent, this._filmSortingComponent, 'afterbegin');
+    render(this._mainElement, this._filmSortingComponent, 'beforeend');
   }
 
   _renderFilmCard(container, film) {
@@ -134,6 +145,10 @@ export default class FilmsBoard {
 
   _renderFilmCards(films) {
     films.forEach((film) => this._renderFilmCard(this._filmListMainComponent.getContainer(), film));
+  }
+
+  _renderLoading() {
+    render(this._allFilmsComponent, this._loadingComponent, 'beforeend');
   }
 
   _renderNoFilms() {
@@ -174,6 +189,7 @@ export default class FilmsBoard {
 
     remove(this._filmSortingComponent);
     remove(this._noFilmsComponent);
+    remove(this._loadingComponent);
     remove(this._loadMoreButtonComponent);
     remove(this._topRatedFilmsComponent);
     remove(this._topCommentedFilmsComponent);
@@ -209,10 +225,16 @@ export default class FilmsBoard {
   }
 
   _renderFilmCardBoard() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const films = this._getFilms();
     const filmsCount = films.length;
 
     if (filmsCount === 0) {
+      remove(this._allFilmsComponent);
       this._renderNoFilms();
     }
 
