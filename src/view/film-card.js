@@ -7,15 +7,11 @@ const isDescriptionLong = (description) => {
 };
 
 const createFilmCardTemplate = (film) => {
-
   const {comments} = film;
   const {title, runtime, release, genre, poster, description, rating} = film.filmInfo;
   const {watchList, alreadyWatched, favorite} = film.userDetails;
 
   const filmDescription = isDescriptionLong(description) === true ? description.substring(0, 139) + '...' : description;
-  const watchListClassName = watchList ? 'film-card__controls-item--active' : '';
-  const alreadyWatchedClassName = alreadyWatched ? 'film-card__controls-item--active' : '';
-  const favoriteClassName = favorite ? 'film-card__controls-item--active' : '';
 
   const year = generateReleaseYear(release.releaseDate);
   const duration = generateDuration(runtime);
@@ -32,9 +28,9 @@ const createFilmCardTemplate = (film) => {
   <p class="film-card__description">${filmDescription}</p>
   <a class="film-card__comments">${comments.length} comments</a>
   <div class="film-card__controls">
-    <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchListClassName}" type="button">Add to watchlist</button>
-    <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${alreadyWatchedClassName}" type="button">Mark as watched</button>
-    <button class="film-card__controls-item button film-card__controls-item--favorite ${favoriteClassName}" type="button">Mark as favorite</button>
+    <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchList ? 'film-card__controls-item--active' : ''}" type="button">Add to watchlist</button>
+    <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${alreadyWatched ? 'film-card__controls-item--active' : ''}" type="button">Mark as watched</button>
+    <button class="film-card__controls-item button film-card__controls-item--favorite ${favorite ? 'film-card__controls-item--active' : ''}" type="button">Mark as favorite</button>
   </div>
 </article>`;
 };

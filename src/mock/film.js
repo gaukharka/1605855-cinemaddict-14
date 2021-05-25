@@ -1,3 +1,7 @@
+import dayjs from 'dayjs';
+import dayjsRandom from 'dayjs-random';
+dayjs.extend(dayjsRandom);
+
 const MIN_RATING = 1;
 const MAX_RATING = 9;
 
@@ -134,6 +138,10 @@ const NAME = [
   'Anvar',
 ];
 
+export const getRandomDate = () => {
+  return dayjs.between('2021-04-01', '2021-05-22');   // year-month-day
+};
+
 export const generateReleaseDate = (date) => {
   const newDate = new Date(date);
   const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(newDate);
@@ -203,7 +211,7 @@ const generateCommentDate = () => {
 
 const generateComment = (id) => {
   return {
-    id:  `comment${id}`,
+    id:  `${id}`,
     author: `${getRandomElement(NAME)}`,
     comment: `${getRandomElement(COMMENTS)}`,
     data: generateCommentDate(),
@@ -249,7 +257,7 @@ const generateFilmsMock = () => {
       watchList: Boolean(getRandomNumber(0, 1)),
       alreadyWatched: Boolean(getRandomNumber(0, 1)),
       favorite: Boolean(getRandomNumber(0, 1)),
-      watchingDate: `${generateReleaseDate(getRandomElement(RELEASE_DATE))}`,
+      watchingDate: getRandomDate(),
     },
   };
 };

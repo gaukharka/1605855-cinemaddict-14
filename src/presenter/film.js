@@ -2,6 +2,7 @@ import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
 import {remove, render, replace} from '../utils/render.js';
 import {isEscEvent} from '../utils/film.js';
+import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -28,6 +29,7 @@ export default class Film {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
 
     this._handleCommentSubmit = this._handleCommentSubmit.bind(this);
+    this._handleCommentDelete = this._handleCommentDelete.bind(this);
   }
 
   init(film) {
@@ -53,6 +55,7 @@ export default class Film {
     this._popupComponent.setPopupFavoriteClickHandler(this._handleFavoriteClick);
 
     this._popupComponent.setCommentSubmitHandler(this._handleCommentSubmit);
+    this._popupComponent.setDeleteCommentButtonClickHandler(this._handleCommentDelete);
 
     if(prevFilmCardComponent === null) {
       render(this._container, this._filmCardComponent, 'beforeend');
@@ -112,8 +115,8 @@ export default class Film {
 
   _closePopup() {
     remove(this._popupComponent);
-    this._popupComponent.reset(this._film.comments);
     this._mode = Mode.DEFAULT;
+    this._popupComponent.reset();
   }
 
   _handleWatchListClick() {
@@ -127,6 +130,8 @@ export default class Film {
     );
 
     this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -149,6 +154,8 @@ export default class Film {
     );
 
     this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -171,6 +178,8 @@ export default class Film {
     );
 
     this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -184,6 +193,31 @@ export default class Film {
 
   _handleCommentSubmit(state) {
     this._film.comments.push(state);
-    this._changeData(this._film);
+    this._changeData(
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._film,
+        {
+          comments: state,
+        },
+      ),
+    );
+  }
+
+  _handleCommentDelete(id) {
+    const initialPosition = this._popupComponent.getElement().scrollTop;
+    this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._film,
+        {
+          comments: this._film.comments.filter((item) => item.id !== id),
+        },
+      ),
+    );
+    this._popupComponent.getElement().scrollTop = initialPosition;
   }
 }

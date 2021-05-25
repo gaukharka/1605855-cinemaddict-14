@@ -1,5 +1,6 @@
 import {generateReleaseDate, isEnterEvent} from '../utils/film.js';
 import SmartView from './smart.js';
+import he from 'he';
 
 const Emoji = {
   SMILE: 'smile',
@@ -10,16 +11,12 @@ const Emoji = {
 
 const createPopupTemplate = (film, state) => {
   const {selectedEmoji, newComment} = state;
-  const {comments} = film;
+  const comments = film.comments;
   const {title, alternativelTitle, runtime, poster, description, genre, rating, ageAllowance, director, writers, actors, release } = film.filmInfo;
   const {watchList, alreadyWatched, favorite} = film.userDetails;
 
   const stringGenre = (genre.length>=2) ? 'Genres' : 'Genre';
   const releaseDate = generateReleaseDate(release.releaseDate);
-
-  const watchListChecked = watchList ? 'checked' : '';
-  const alreadyWatchedChecked = alreadyWatched ? 'checked' : '';
-  const favoriteChecked = favorite ? 'checked' : '';
 
   const generateGenres = () => {
     return `${genre.map((value) => `<span class="film-details__genre">
@@ -28,12 +25,12 @@ const createPopupTemplate = (film, state) => {
   };
 
   const generateComments = () => {
-    return `${comments.map((comment) => `<li class="film-details__comment">
+    return `${comments.map((comment) => `<li class="film-details__comment" data-id="${comment.id}">
       <span class="film-details__comment-emoji">
         <img src="images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-${comment.emotion}">
       </span>
       <div>
-        <p class="film-details__comment-text">${comment.comment}</p>
+        <p class="film-details__comment-text">${he.encode(comment.comment)}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${comment.author}</span>
           <span class="film-details__comment-day">${comment.data}</span>
@@ -42,10 +39,6 @@ const createPopupTemplate = (film, state) => {
       </div>
     </li>`).join('')}`;
   };
-
-  const emojiRender = selectedEmoji ? `<img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji-${selectedEmoji}"></img>` : '';
-
-  const textRender = newComment ? newComment : '';
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -109,13 +102,13 @@ const createPopupTemplate = (film, state) => {
       </div>
 
       <section class="film-details__controls">
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchListChecked}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchList ? 'checked' : ''}>
         <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${alreadyWatchedChecked}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${alreadyWatched ? 'checked' : ''}>
         <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favoriteChecked}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favorite ? 'checked' : ''}>
         <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
       </section>
     </div>
@@ -129,31 +122,31 @@ const createPopupTemplate = (film, state) => {
         </ul>
 
         <div class="film-details__new-comment">
-          <div class="film-details__add-emoji-label">${emojiRender}</div>
+          <div class="film-details__add-emoji-label">${selectedEmoji ? `<img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji-${selectedEmoji}"></img>` : ''}</div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${textRender}</textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${newComment ? newComment : ''}</textarea>
           </label>
 
           <div class="film-details__emoji-list">
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" ${selectedEmoji === Emoji.SMILE ? 'checked' : ''}>
-            <label class="film-details__emoji-label" for="emoji-smile">
-              <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${Emoji.SMILE}" value="${Emoji.SMILE}" ${selectedEmoji === Emoji.SMILE ? 'checked' : ''}>
+            <label class="film-details__emoji-label" for="emoji-${Emoji.SMILE}">
+              <img src="./images/emoji/${Emoji.SMILE}.png" width="30" height="30" alt="emoji">
             </label>
 
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping" ${selectedEmoji === Emoji.SLEEPING ? 'checked' : ''}>
-            <label class="film-details__emoji-label" for="emoji-sleeping">
-              <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${Emoji.SLEEPING}" value="${Emoji.SLEEPING}" ${selectedEmoji === Emoji.SLEEPING ? 'checked' : ''}>
+            <label class="film-details__emoji-label" for="emoji-${Emoji.SLEEPING}">
+              <img src="./images/emoji/${Emoji.SLEEPING}.png" width="30" height="30" alt="emoji">
             </label>
 
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke" ${selectedEmoji === Emoji.PUKE ? 'checked' : ''}>
-            <label class="film-details__emoji-label" for="emoji-puke">
-              <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${Emoji.PUKE}" value="${Emoji.PUKE}" ${selectedEmoji === Emoji.PUKE ? 'checked' : ''}>
+            <label class="film-details__emoji-label" for="emoji-${Emoji.PUKE}">
+              <img src="./images/emoji/${Emoji.PUKE}.png" width="30" height="30" alt="emoji">
             </label>
 
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry" ${selectedEmoji === Emoji.ANGRY ? 'checked' : ''}>
-            <label class="film-details__emoji-label" for="emoji-angry">
-              <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${Emoji.ANGRY}" value="${Emoji.ANGRY}" ${selectedEmoji === Emoji.ANGRY ? 'checked' : ''}>
+            <label class="film-details__emoji-label" for="emoji-${Emoji.ANGRY}">
+              <img src="./images/emoji/${Emoji.ANGRY}.png" width="30" height="30" alt="emoji">
             </label>
           </div>
         </div>
@@ -172,14 +165,13 @@ export default class Popup extends SmartView {
     };
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
-
     this._watchListClickHandler = this._watchListClickHandler.bind(this);
     this._alreadyWatchedClickHandler = this._alreadyWatchedClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
-
     this._emojiSelectHandler = this._emojiSelectHandler.bind(this);
     this._textInputHandler = this._textInputHandler.bind(this);
     this._enterKeyDownHandler = this._enterKeyDownHandler.bind(this);
+    this._deleteCommentButtonHandler = this._deleteCommentButtonHandler.bind(this);
 
     this._setInnerChangeHandlers();
   }
@@ -205,7 +197,7 @@ export default class Popup extends SmartView {
 
   setPopupWatchListClickHandler(callback) {
     this._callback.watchListClick = callback;
-    this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('click', this._watchListClickHandler);
+    this.getElement().querySelector('#watchlist').addEventListener('click', this._watchListClickHandler);
   }
 
   _alreadyWatchedClickHandler(evt) {
@@ -215,7 +207,7 @@ export default class Popup extends SmartView {
 
   setPopupAlreadyWatchedClickHandler(callback) {
     this._callback.alreadyWatchedClick = callback;
-    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('click', this._alreadyWatchedClickHandler);
+    this.getElement().querySelector('#watched').addEventListener('click', this._alreadyWatchedClickHandler);
   }
 
   _favoriteClickHandler(evt) {
@@ -225,30 +217,43 @@ export default class Popup extends SmartView {
 
   setPopupFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
-    this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('click', this._favoriteClickHandler);
+    this.getElement().querySelector('#favorite').addEventListener('click', this._favoriteClickHandler);
   }
 
   reset() {
-    this.updateState(this._state);
+    this.updateState({
+      newComment: '',
+    }, true);
+
+    this.updateState({
+      selectedEmoji: '',
+    });
   }
 
   restoreHandlers() {
-    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
     this._setInnerChangeHandlers();
+    this.setPopupWatchListClickHandler(this._callback.watchListClick);
+    this.setPopupAlreadyWatchedClickHandler(this._callback.alreadyWatchedClick);
+    this.setPopupFavoriteClickHandler(this._callback.favoriteClick );
+    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
     this.setCommentSubmitHandler(this._callback.commentSubmit);
+    this.setDeleteCommentButtonClickHandler(this._callback.deleteCommentButtonClick);
   }
 
   _emojiSelectHandler(evt) {
     const initialPosition = this.getElement().scrollTop;
     evt.preventDefault();
+
     this.updateState({
       selectedEmoji: evt.target.value,
     });
+
     this.getElement().scrollTop = initialPosition;
   }
 
   _textInputHandler(evt) {
     evt.preventDefault();
+
     this.updateState({
       newComment: evt.target.value,
     }, true);
@@ -259,15 +264,40 @@ export default class Popup extends SmartView {
     this.getElement().querySelector('.film-details__emoji-list').addEventListener('change', this._emojiSelectHandler);
   }
 
+  //comment submit
   _enterKeyDownHandler(evt) {
+    const initialPosition = this.getElement().scrollTop;
     if(isEnterEvent(evt)) {
       evt.preventDefault();
 
-      if(!this._state.selectedEmoji){
+      if(!this._state.selectedEmoji || !this._state.newComment){
         return;
       }
 
-      this._callback.commentSubmit(Popup.parseStateToData(this._state));
+      this._callback.commentSubmit(Popup.parseStateToData(this._film, this._state));
+
+      this.updateState({
+        id: '',
+        newComment: '',
+        selectedEmoji: '',
+      });
+    }
+
+    this.getElement().scrollTop = initialPosition;
+  }
+
+  //comment delete
+  _deleteCommentButtonHandler(evt) {
+    evt.preventDefault();
+
+    if (evt.target.matches('.film-details__comment-delete')) {
+      const id = evt.target.closest('.film-details__comment').dataset.id;
+      const comments = this._film.comments.filter((item) => item.id !== id);
+      this._callback.deleteCommentButtonClick(id);
+
+      this.updateState({
+        comments,
+      });
     }
   }
 
@@ -276,11 +306,24 @@ export default class Popup extends SmartView {
     document.addEventListener('keydown', this._enterKeyDownHandler);
   }
 
-  static parseStateToData(state){
+  setDeleteCommentButtonClickHandler(callback) {
+    this._callback.deleteCommentButtonClick = callback;
+    this.getElement().querySelector('.film-details__comments-list').addEventListener('click', this._deleteCommentButtonHandler);
+  }
+
+  static parseStateToData(film, state){
+    const length = film.comments[film.comments.length - 1];
+    const id = Number(length.id);
     const data = {
+      id: String(id+1),
       comment: state.newComment,
       emotion: state.selectedEmoji,
     };
+
+    delete state.id;
+    delete state.newComment;
+    delete state.selectedEmoji;
+
     return data;
   }
 }
