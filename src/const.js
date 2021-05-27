@@ -36,3 +36,9 @@ export const StatsFilter = {
   MONTH: 'month',
   YEAR: 'year',
 };
+
+export const PopupState = {
+  SENDING: 'Sending',
+  DELETING: 'Deleting',
+  ABORTING: 'Aborting',
+};

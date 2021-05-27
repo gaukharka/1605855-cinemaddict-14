@@ -9,9 +9,9 @@ const Emoji = {
   ANGRY: 'angry',
 };
 
-const createPopupTemplate = (film, state) => {
-  const {selectedEmoji, newComment} = state;
-  const comments = film.comments;
+const createPopupTemplate = (film, state, newComment) => {
+  const {emoji, comment} = newComment;
+  const comments = state.comments;
   const {title, alternativelTitle, runtime, poster, description, genre, rating, ageAllowance, director, writers, actors, release } = film.filmInfo;
   const {watchList, alreadyWatched, favorite} = film.userDetails;
 
@@ -122,29 +122,29 @@ const createPopupTemplate = (film, state) => {
         </ul>
 
         <div class="film-details__new-comment">
-          <div class="film-details__add-emoji-label">${selectedEmoji ? `<img src="images/emoji/${selectedEmoji}.png" width="55" height="55" alt="emoji-${selectedEmoji}"></img>` : ''}</div>
+          <div class="film-details__add-emoji-label">${emoji ? `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}"></img>` : ''}</div>
 
           <label class="film-details__comment-label">
             <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${newComment ? newComment : ''}</textarea>
           </label>
 
           <div class="film-details__emoji-list">
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${Emoji.SMILE}" value="${Emoji.SMILE}" ${selectedEmoji === Emoji.SMILE ? 'checked' : ''}>
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${Emoji.SMILE}" value="${Emoji.SMILE}" ${emoji === Emoji.SMILE ? 'checked' : ''}>
             <label class="film-details__emoji-label" for="emoji-${Emoji.SMILE}">
               <img src="./images/emoji/${Emoji.SMILE}.png" width="30" height="30" alt="emoji">
             </label>
 
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${Emoji.SLEEPING}" value="${Emoji.SLEEPING}" ${selectedEmoji === Emoji.SLEEPING ? 'checked' : ''}>
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${Emoji.SLEEPING}" value="${Emoji.SLEEPING}" ${emoji === Emoji.SLEEPING ? 'checked' : ''}>
             <label class="film-details__emoji-label" for="emoji-${Emoji.SLEEPING}">
               <img src="./images/emoji/${Emoji.SLEEPING}.png" width="30" height="30" alt="emoji">
             </label>
 
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${Emoji.PUKE}" value="${Emoji.PUKE}" ${selectedEmoji === Emoji.PUKE ? 'checked' : ''}>
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${Emoji.PUKE}" value="${Emoji.PUKE}" ${emoji === Emoji.PUKE ? 'checked' : ''}>
             <label class="film-details__emoji-label" for="emoji-${Emoji.PUKE}">
               <img src="./images/emoji/${Emoji.PUKE}.png" width="30" height="30" alt="emoji">
             </label>
 
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${Emoji.ANGRY}" value="${Emoji.ANGRY}" ${selectedEmoji === Emoji.ANGRY ? 'checked' : ''}>
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${Emoji.ANGRY}" value="${Emoji.ANGRY}" ${emoji === Emoji.ANGRY ? 'checked' : ''}>
             <label class="film-details__emoji-label" for="emoji-${Emoji.ANGRY}">
               <img src="./images/emoji/${Emoji.ANGRY}.png" width="30" height="30" alt="emoji">
             </label>
@@ -156,12 +156,16 @@ const createPopupTemplate = (film, state) => {
 </section>`;
 };
 export default class Popup extends SmartView {
-  constructor(film) {
+  constructor(film, comments) {
     super();
     this._film = film;
     this._state = {
-      selectedEmoji: '',
-      newComment: '',
+      comments,
+    };
+
+    this._newComment = {
+      emoji: '',
+      comment: '',
     };
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
@@ -177,7 +181,7 @@ export default class Popup extends SmartView {
   }
 
   getTemplate() {
-    return createPopupTemplate(this._film, this._state);
+    return createPopupTemplate(this._film, this._state, this._newComment);
   }
 
   _closeButtonClickHandler(evt) {

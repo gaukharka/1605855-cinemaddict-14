@@ -15,8 +15,9 @@ import {SortType, UserAction, UpdateType} from '../const.js';
 const FILMS_DISPLAY_STEP = 5;
 const MIN_CARD_COUNT = 2;
 export default class FilmsBoard {
-  constructor(bodyElement, mainElement, filmsModel, filterModel, api) {
+  constructor(bodyElement, mainElement, filmsModel, filterModel, commenstModel, api) {
     this._filmsModel = filmsModel;
+    this._commenstModel = commenstModel;
     this._filterModel = filterModel;
     this._bodyElement = bodyElement;
     this._mainElement = mainElement;
@@ -55,6 +56,7 @@ export default class FilmsBoard {
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
+    this._renderSort();
     this._renderFilmCardBoard();
   }
 
@@ -89,10 +91,22 @@ export default class FilmsBoard {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    if (actionType === UserAction.UPDATE_FILM) {
-      this._api.updateFilms(update).then((response) => {
-        this._filmsModel.updateFilm(updateType, response);
-      });
+    switch(actionType) {
+      case UserAction.UPDATE_FILM:
+        this._api.updateFilms(update).then((response) => {
+          this._filmsModel.updateFilm(updateType, response);
+        });
+        break;
+      case UserAction.ADD_COMMENT:
+        this._api.updateFilms(update).then((response) => {
+          this._filmsModel.updateFilm(updateType, response);
+        });
+        break;
+      case UserAction.DELETE_COMMENT:
+        this._api.updateFilms(update).then((response) => {
+          this._filmsModel.updateFilm(updateType, response);
+        });
+        break;
     }
   }
 
@@ -138,7 +152,7 @@ export default class FilmsBoard {
   }
 
   _renderFilmCard(container, film) {
-    const filmPresenter = new FilmPresenter(container, this._bodyElement, this._handleViewAction, this._handleModeChange);
+    const filmPresenter = new FilmPresenter(container, this._bodyElement, this._handleViewAction, this._handleModeChange, this._commenstModel, this._api);
     filmPresenter.init(film);
     this._filmPresenter[film.id] = filmPresenter;
   }
@@ -148,10 +162,11 @@ export default class FilmsBoard {
   }
 
   _renderLoading() {
-    render(this._allFilmsComponent, this._loadingComponent, 'beforeend');
+    render(this._filmListMainComponent, this._loadingComponent, 'beforeend');
   }
 
   _renderNoFilms() {
+    remove(this._allFilmsComponent);
     render(this._mainElement, this._noFilmsComponent, 'beforeend');
   }
 
@@ -234,14 +249,12 @@ export default class FilmsBoard {
     const filmsCount = films.length;
 
     if (filmsCount === 0) {
-      remove(this._allFilmsComponent);
       this._renderNoFilms();
     }
 
-    this._renderSort();
     this._renderExtraFilms();
-
     this._renderFilmCards(films.slice(0, Math.min(filmsCount, this._displayedFilms)));
+
     if (filmsCount > this._displayedFilms) {
       this._renderLoadMoreButton();
     }
