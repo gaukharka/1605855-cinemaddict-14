@@ -250,6 +250,7 @@ export default class FilmsBoard {
 
     if (filmsCount === 0) {
       this._renderNoFilms();
+      return;
     }
 
     this._renderExtraFilms();
