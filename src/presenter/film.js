@@ -130,8 +130,8 @@ export default class Film {
     this._popupComponent.reset();
   }
 
-  // _handleModelEvent() {
-  // }
+  _handleModelEvent() {
+  }
 
   _setViewState(state, id) {
     const resetState = () => {

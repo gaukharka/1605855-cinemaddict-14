@@ -51,7 +51,7 @@ filmsCardsBoardPresenter.init();
 api.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
+  })
+  .catch(() => {
+    filmsModel.setFilms(UpdateType.INIT, []);
   });
-  // .catch(() => {
-  //   filmsModel.setFilms(UpdateType.INIT, []);
-  // });

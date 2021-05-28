@@ -70,17 +70,17 @@ export default class Films extends Observer {
           actors: film.film_info.actors,
           release: {
             releaseDate: film.film_info.release.date,
-            film: film.film_info.release.country,
+            country: film.film_info.release.release_country,
           },
           runtime: film.film_info.runtime,
           genre: film.film_info.genre,
           description: film.film_info.description,
         },
         userDetails: {
-          watchList: film.film_info.watchlist,
-          alreadyWatched: film.film_info.already_watched,
-          favorite: film.film_info.favorite,
-          watchingDate: film.film_info.watching_date,
+          watchList: film.user_details.watchlist,
+          alreadyWatched: film.user_details.already_watched,
+          favorite: film.user_details.favorite,
+          watchingDate: film.user_details.watching_date,
         },
       },
     );
@@ -96,7 +96,7 @@ export default class Films extends Observer {
       {},
       film,
       {
-        'filmInfo': {
+        'film_info': {
           'title': film.filmInfo.title,
           'alternative_title': film.filmInfo.alternativelTitle,
           'total_rating': film.filmInfo.rating,
@@ -113,11 +113,11 @@ export default class Films extends Observer {
           'genre': film.filmInfo.genre,
           'description': film.filmInfo.description,
         },
-        'userDetails': {
-          'watchList': film.filmInfo.watchlist,
-          'already_watched': film.filmInfo.alreadyWatched,
-          'favorite': film.filmInfo.favorite,
-          'watching_date': film.filmInfo.watchingDate,
+        'user_details': {
+          'watchlist': film.userDetails.watchlist,
+          'already_watched': film.userDetails.alreadyWatched,
+          'favorite': film.userDetails.favorite,
+          'watching_date': film.userDetails.watchingDate,
         },
       },
     );

@@ -32,9 +32,6 @@ export default class FilmsBoard {
     this._topRatedFilmsComponent = null;
     this._topCommentedFilmsComponent = null;
 
-    this._sortedByRatingFilmsArray = this._filmsModel.getFilms().slice().sort(generateSortedByRatingFilms);
-    this._mostCommentedFilmsArray = this._filmsModel.getFilms().slice().sort(compareComments);
-
     this._allFilmsComponent = new AllFilmsView();
     this._filmListMainComponent = new FilmListMainView();
     this._noFilmsComponent = new NoFilms();
@@ -146,7 +143,7 @@ export default class FilmsBoard {
 
     this._filmSortingComponent = new FilmSortingView(this._currentSortType);
     this._filmSortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
-    render(this._mainElement, this._filmSortingComponent, 'beforeend');
+    render(this._mainElement, this._filmSortingComponent, 'afterbegin');
   }
 
   _renderFilmCard(container, film) {
@@ -160,12 +157,10 @@ export default class FilmsBoard {
   }
 
   _renderLoading() {
-    remove(this._allFilmsComponent);
     render(this._filmListMainComponent, this._loadingComponent, 'beforeend');
   }
 
   _renderNoFilms() {
-    remove(this._allFilmsComponent);
     render(this._mainElement, this._noFilmsComponent, 'beforeend');
   }
 
@@ -227,12 +222,12 @@ export default class FilmsBoard {
     }
   }
 
-  _renderExtraFilms() {
+  _renderExtraFilms(films) {
     this._topRatedFilmsComponent = new TopRatedFilmsView();
     this._topCommentedFilmsComponent = new TopCommentedFilmsView();
 
-    this._renderExtraFilmCardsList(this._topRatedFilmsComponent, this._sortedByRatingFilmsArray);
-    this._renderExtraFilmCardsList(this._topCommentedFilmsComponent, this._mostCommentedFilmsArray);
+    this._renderExtraFilmCardsList(this._topRatedFilmsComponent, films.slice().sort(generateSortedByRatingFilms));
+    this._renderExtraFilmCardsList(this._topCommentedFilmsComponent, films.slice().sort(compareComments));
 
     render(this._allFilmsComponent, this._topRatedFilmsComponent, 'beforeend');
     render(this._allFilmsComponent, this._topCommentedFilmsComponent, 'beforeend');
@@ -253,7 +248,7 @@ export default class FilmsBoard {
     }
 
     this._renderSort();
-    this._renderExtraFilms();
+    this._renderExtraFilms(films);
     this._renderFilmCards(films.slice(0, Math.min(filmsCount, this._displayedFilms)));
 
     if (filmsCount > this._displayedFilms) {
