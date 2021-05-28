@@ -3,18 +3,19 @@ import PopupView from '../view/popup.js';
 import {remove, render, replace} from '../utils/render.js';
 import {isEscEvent} from '../utils/film.js';
 import {UserAction, UpdateType, PopupState} from '../const.js';
+import CommentsModel from '../model/comments-model.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
   POPUP: 'POPUP',
 };
 export default class Film {
-  constructor(container, bodyElement, changeData, changeMode, commenstModel, api) {
+  constructor(container, bodyElement, changeData, changeMode, api) {
     this._container = container;
     this._bodyElement = bodyElement;
     this._changeData = changeData;
     this._changeMode = changeMode;
-    this._commenstModel = commenstModel;
+    this._commenstModel = new CommentsModel();
     this._api = api;
 
     this._mode = Mode.DEFAULT;
@@ -101,7 +102,7 @@ export default class Film {
   _openPopup() {
     this._api.getComments(this._film.id)
       .then((comments) => {
-        this._film = this._filmsModel.getFilms().find((film) => film.id === this._film.id);
+        // this._film = this._filmsModel.getFilms().find((film) => film.id === this._film.id);
         this._commentsModel.setComments(comments);
         this._popupComponent = new PopupView(this._film, this._commenstModel.getComments());
         render(this._bodyElement, this._popupComponent.getElement(), 'beforeend');

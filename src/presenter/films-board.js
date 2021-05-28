@@ -15,9 +15,8 @@ import {SortType, UserAction, UpdateType} from '../const.js';
 const FILMS_DISPLAY_STEP = 5;
 const MIN_CARD_COUNT = 2;
 export default class FilmsBoard {
-  constructor(bodyElement, mainElement, filmsModel, filterModel, commenstModel, api) {
+  constructor(bodyElement, mainElement, filmsModel, filterModel, api) {
     this._filmsModel = filmsModel;
-    this._commenstModel = commenstModel;
     this._filterModel = filterModel;
     this._bodyElement = bodyElement;
     this._mainElement = mainElement;
@@ -56,7 +55,6 @@ export default class FilmsBoard {
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
-    this._renderSort();
     this._renderFilmCardBoard();
   }
 
@@ -152,7 +150,7 @@ export default class FilmsBoard {
   }
 
   _renderFilmCard(container, film) {
-    const filmPresenter = new FilmPresenter(container, this._bodyElement, this._handleViewAction, this._handleModeChange, this._commenstModel, this._api);
+    const filmPresenter = new FilmPresenter(container, this._bodyElement, this._handleViewAction, this._handleModeChange, this._api);
     filmPresenter.init(film);
     this._filmPresenter[film.id] = filmPresenter;
   }
@@ -162,6 +160,7 @@ export default class FilmsBoard {
   }
 
   _renderLoading() {
+    remove(this._allFilmsComponent);
     render(this._filmListMainComponent, this._loadingComponent, 'beforeend');
   }
 
@@ -222,7 +221,7 @@ export default class FilmsBoard {
 
   _renderExtraFilmCardsList(container, films) {
     for(let i=0; i< MIN_CARD_COUNT; i++){
-      if (films !==0) {
+      if (films.length) {
         this._renderFilmCard(container.getContainer(), films[i]);
       }
     }
@@ -253,6 +252,7 @@ export default class FilmsBoard {
       return;
     }
 
+    this._renderSort();
     this._renderExtraFilms();
     this._renderFilmCards(films.slice(0, Math.min(filmsCount, this._displayedFilms)));
 
