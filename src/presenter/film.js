@@ -47,18 +47,10 @@ export default class Film {
     this._filmCardComponent.setPosterClickHandler(this._handlePopupOpenClick);
     this._filmCardComponent.setTitleClickHandler(this._handlePopupOpenClick);
     this._filmCardComponent.setCommentClickHandler(this._handlePopupOpenClick);
-    this._popupComponent.setCloseButtonClickHandler(this._handlePopupCloseClick);
 
     this._filmCardComponent.setWatchListClickHandler(this._handleWatchListClick);
     this._filmCardComponent.setAlreadyWatchedClickHandler(this._handleAlreadyWatchedClick);
     this._filmCardComponent.setFavoriteClickHandler(this._handleFavoriteClick);
-
-    this._popupComponent.setPopupWatchListClickHandler(this._handleWatchListClick);
-    this._popupComponent.setPopupAlreadyWatchedClickHandler(this._handleAlreadyWatchedClick);
-    this._popupComponent.setPopupFavoriteClickHandler(this._handleFavoriteClick);
-
-    this._popupComponent.setCommentSubmitHandler(this._handleCommentSubmit);
-    this._popupComponent.setDeleteCommentButtonClickHandler(this._handleCommentDelete);
 
     if(prevFilmCardComponent === null) {
       render(this._container, this._filmCardComponent, 'beforeend');
@@ -102,11 +94,16 @@ export default class Film {
   _openPopup() {
     this._api.getComments(this._film.id)
       .then((comments) => {
-        // this._film = this._filmsModel.getFilms().find((film) => film.id === this._film.id);
         this._commentsModel.setComments(comments);
         this._popupComponent = new PopupView(this._film, this._commenstModel.getComments());
         render(this._bodyElement, this._popupComponent.getElement(), 'beforeend');
         this._popupComponent.setCloseButtonClickHandler(this._handlePopupCloseClick);
+        this._popupComponent.setPopupWatchListClickHandler(this._handleWatchListClick);
+        this._popupComponent.setPopupAlreadyWatchedClickHandler(this._handleAlreadyWatchedClick);
+        this._popupComponent.setPopupFavoriteClickHandler(this._handleFavoriteClick);
+
+        this._popupComponent.setCommentSubmitHandler(this._handleCommentSubmit);
+        this._popupComponent.setDeleteCommentButtonClickHandler(this._handleCommentDelete);
       });
   }
 

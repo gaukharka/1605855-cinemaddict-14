@@ -69,7 +69,7 @@ export default class Films extends Observer {
           writers: film.film_info.writers,
           actors: film.film_info.actors,
           release: {
-            date: film.film_info.release.date,
+            releaseDate: film.film_info.release.date,
             film: film.film_info.release.country,
           },
           runtime: film.film_info.runtime,
@@ -106,7 +106,7 @@ export default class Films extends Observer {
           'writers': film.filmInfo.writers,
           'actors': film.filmInfo.actors,
           'release': {
-            'date': film.filmInfo.release.date,
+            'date': film.filmInfo.release.releaseDate,
             'release_country': film.filmInfo.release.country,
           },
           'runtime': film.filmInfo.runtime,
