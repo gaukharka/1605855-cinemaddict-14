@@ -15,9 +15,10 @@ import {SortType, UserAction, UpdateType} from '../const.js';
 const FILMS_DISPLAY_STEP = 5;
 const MIN_CARD_COUNT = 2;
 export default class FilmsBoard {
-  constructor(bodyElement, mainElement, filmsModel, filterModel, api) {
+  constructor(bodyElement, mainElement, filmsModel, filterModel, commentsModel, api) {
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
+    this._commentsModel = commentsModel;
     this._bodyElement = bodyElement;
     this._mainElement = mainElement;
     this._displayedFilms = FILMS_DISPLAY_STEP;
@@ -51,6 +52,7 @@ export default class FilmsBoard {
 
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+    this._commentsModel.addObserver(this._handleModelEvent);
 
     this._renderFilmCardBoard();
   }
@@ -62,6 +64,7 @@ export default class FilmsBoard {
 
     this._filmsModel.removeObserver(this._handleModelEvent);
     this._filterModel.removeObserver(this._handleModelEvent);
+    this._commentsModel.removeObserver(this._handleModelEvent);
   }
 
   _getFilms() {
@@ -79,6 +82,16 @@ export default class FilmsBoard {
     }
   }
 
+  _updateBoard(data) {
+    Object
+      .values(this._filmPresenter)
+      .forEach((presenter) => {
+        if (data.id in presenter) {
+          presenter[data.id].init(data);
+        }
+      });
+  }
+
   _handleModeChange() {
     Object
       .values(this._filmPresenter)
@@ -88,19 +101,16 @@ export default class FilmsBoard {
   _handleViewAction(actionType, updateType, update) {
     switch(actionType) {
       case UserAction.UPDATE_FILM:
-        this._api.updateFilms(update).then((response) => {
-          this._filmsModel.updateFilm(updateType, response);
-        });
+        this._api.updateFilms(update)
+          .then((response) => {
+            this._filmsModel.updateFilm(updateType, response);
+          });
         break;
       case UserAction.ADD_COMMENT:
-        this._api.updateFilms(update).then((response) => {
-          this._filmsModel.updateFilm(updateType, response);
-        });
-        break;
-      case UserAction.DELETE_COMMENT:
-        this._api.updateFilms(update).then((response) => {
-          this._filmsModel.updateFilm(updateType, response);
-        });
+        this._api.updateFilms(update)
+          .then((response) => {
+            this._filmsModel.updateFilm(updateType, response);
+          });
         break;
     }
   }
@@ -108,7 +118,7 @@ export default class FilmsBoard {
   _handleModelEvent(updateType, data) {
     switch(updateType) {
       case UpdateType.PATCH:
-        this._filmPresenter[data.id].init(data);
+        this._updateBoard(data);
         break;
       case UpdateType.MINOR:
         this._clearFilmCardBoard();
@@ -147,7 +157,7 @@ export default class FilmsBoard {
   }
 
   _renderFilmCard(container, film) {
-    const filmPresenter = new FilmPresenter(container, this._bodyElement, this._handleViewAction, this._handleModeChange, this._api);
+    const filmPresenter = new FilmPresenter(container, this._bodyElement, this._handleViewAction, this._handleModeChange, this._commentsModel, this._api);
     filmPresenter.init(film);
     this._filmPresenter[film.id] = filmPresenter;
   }

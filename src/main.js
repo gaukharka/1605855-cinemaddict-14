@@ -6,6 +6,7 @@ import FilmCardsBoardPresenter from './presenter/films-board.js';
 import FilterPresenter from './presenter/filter.js';
 import FilmsModel from './model/films-model.js';
 import FilterModel from './model/filters-model.js';
+import CommentsModel from './model/comments-model.js';
 import { MenuItem, UpdateType } from './const.js';
 import Api from './api.js';
 
@@ -21,6 +22,7 @@ const footerElement = footer.querySelector('.footer__statistics');
 const api = new Api(END_POINT, AUTHORIZATION);
 const filmsModel = new FilmsModel();
 const filterModel = new FilterModel();
+const commentsModel = new CommentsModel();
 let statsComponent = null;
 
 const handleSiteMenuClick = (menuItem) => {
@@ -42,7 +44,7 @@ const handleSiteMenuClick = (menuItem) => {
 render(headerElement, new UserRankView(filmsModel.getFilms()), 'beforeend');
 render(footerElement, new FooterStatsView(filmsModel.getFilms().length), 'beforeend');
 
-const filmsCardsBoardPresenter = new FilmCardsBoardPresenter(bodyElement, mainElement, filmsModel, filterModel, api);
+const filmsCardsBoardPresenter = new FilmCardsBoardPresenter(bodyElement, mainElement, filmsModel, filterModel, commentsModel, api);
 const filterPresenter = new FilterPresenter(mainElement, filterModel, filmsModel, handleSiteMenuClick);
 
 filterPresenter.init();

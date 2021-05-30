@@ -3,19 +3,18 @@ import PopupView from '../view/popup.js';
 import {remove, render, replace} from '../utils/render.js';
 import {isEscEvent} from '../utils/film.js';
 import {UserAction, UpdateType, PopupState} from '../const.js';
-import CommentsModel from '../model/comments-model.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
   POPUP: 'POPUP',
 };
 export default class Film {
-  constructor(container, bodyElement, changeData, changeMode, api) {
+  constructor(container, bodyElement, changeData, changeMode, commentsModel, api) {
     this._container = container;
     this._bodyElement = bodyElement;
     this._changeData = changeData;
     this._changeMode = changeMode;
-    this._commenstModel = new CommentsModel();
+    this._commentsModel = commentsModel;
     this._api = api;
 
     this._mode = Mode.DEFAULT;
@@ -33,14 +32,11 @@ export default class Film {
 
     this._handleCommentSubmit = this._handleCommentSubmit.bind(this);
     this._handleCommentDelete = this._handleCommentDelete.bind(this);
-    // this._handleModelEvent = this._handleModelEvent.bind(this);
-    // this._commentsModel.addObserver(this._handleModelEvent);
   }
 
   init(film) {
     this._film = film;
     const prevFilmCardComponent = this._filmCardComponent;
-    const prevPopupComponent = this._popupComponent;
 
     this._filmCardComponent = new FilmCardView(this._film);
 
@@ -61,11 +57,11 @@ export default class Film {
       replace(this._filmCardComponent, prevFilmCardComponent);
     }
 
-    if(this._mode === Mode.POPUP) {
-      replace(this._popupComponent, prevPopupComponent);
-    }
+    remove(prevFilmCardComponent);
+  }
 
-    remove(prevPopupComponent);
+  _updateFilm() {
+    this._film = this._filmsModel.getFilms().find((film) => film.id === this._film.id);
   }
 
   resetView() {
@@ -91,26 +87,45 @@ export default class Film {
     }
   }
 
-  _openPopup() {
-    this._api.getComments(this._film.id)
-      .then((comments) => {
-        this._commentsModel.setComments(comments);
-        this._popupComponent = new PopupView(this._film, this._commenstModel.getComments());
-        render(this._bodyElement, this._popupComponent.getElement(), 'beforeend');
-        this._popupComponent.setCloseButtonClickHandler(this._handlePopupCloseClick);
-        this._popupComponent.setPopupWatchListClickHandler(this._handleWatchListClick);
-        this._popupComponent.setPopupAlreadyWatchedClickHandler(this._handleAlreadyWatchedClick);
-        this._popupComponent.setPopupFavoriteClickHandler(this._handleFavoriteClick);
+  _openPopup(comments) {
+    const prevPopupComponent = this._popupComponent;
+    this._popupComponent = new PopupView(this._film, comments);
 
-        this._popupComponent.setCommentSubmitHandler(this._handleCommentSubmit);
-        this._popupComponent.setDeleteCommentButtonClickHandler(this._handleCommentDelete);
-      });
+    this._popupComponent.setCloseButtonClickHandler(this._handlePopupCloseClick);
+    this._popupComponent.setPopupWatchListClickHandler(this._handleWatchListClick);
+    this._popupComponent.setPopupAlreadyWatchedClickHandler(this._handleAlreadyWatchedClick);
+    this._popupComponent.setPopupFavoriteClickHandler(this._handleFavoriteClick);
+    this._popupComponent.setCommentSubmitHandler(this._handleCommentSubmit);
+    this._popupComponent.setDeleteCommentButtonClickHandler(this._handleCommentDelete);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+    this._commentsModel.addObserver(this._handleModelEvent);
+
+    if (prevPopupComponent !== null) {
+      replace(this._popupComponent, prevPopupComponent);
+    }
+    render(this._bodyElement, this._popupComponent.getElement(), 'beforeend');
+
+    remove(prevPopupComponent);
+  }
+
+  _closePopup() {
+    this._changeData(UpdateType.PATCH, this._film);
+    remove(this._popupComponent);
+    this._commentsModel.removeObserver(this._handleModelEvent);
+    this._mode = Mode.DEFAULT;
+    this._popupComponent.reset();
   }
 
   _handlePopupOpenClick() {
-    this._openPopup();
     this._changeMode();
     this._mode = Mode.POPUP;
+
+    this._api.getComment(this._film.id)
+      .then((comments) => {
+        this._commentsModel.setComments(comments);
+        this._openPopup(comments);
+      });
+
     document.body.classList.add('hide-overflow');
     document.addEventListener('keydown', this._escKeyDownHandler);
     document.addEventListener('keydown', this._enterKeyDownHandler);
@@ -119,18 +134,9 @@ export default class Film {
   _handlePopupCloseClick() {
     this._closePopup();
     document.body.classList.remove('hide-overflow');
-    // this._commentsModel.removeObserver(this._handleModelEvent);
+    this._commentsModel.removeObserver(this._handleModelEvent);
     document.removeEventListener('keydown', this._escKeyDownHandler);
     document.removeEventListener('keydown', this._enterKeyDownHandler);
-  }
-
-  _closePopup() {
-    remove(this._popupComponent);
-    this._mode = Mode.DEFAULT;
-    this._popupComponent.reset();
-  }
-
-  _handleModelEvent() {
   }
 
   _setViewState(state, id) {
@@ -159,8 +165,19 @@ export default class Film {
     }
   }
 
+  _handleModelEvent() {
+    if (this._mode === Mode.POPUP) {
+      this._api.getComment(this._film.id)
+        .then((comments) => {
+          this._updateFilm();
+          this._commentsModel.setComments(comments);
+          this._openPopup(comments);
+        });
+    }
+  }
+
   _handleWatchListClick() {
-    const initialPosition = this._popupComponent.getElement().scrollTop;
+    // const initialPosition = this._popupComponent.getElement().scrollTop;
     this._setViewState(PopupState.SENDING);
     const newUserDetails = Object.assign(
       {},
@@ -172,7 +189,7 @@ export default class Film {
 
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
+      this._mode === Mode.DEFAULT ? UpdateType.MINOR : this._mode === Mode.POPUP ? UpdateType.PATCH : '',
       Object.assign(
         {},
         this._film,
@@ -181,11 +198,11 @@ export default class Film {
         },
       ),
     );
-    this._popupComponent.getElement().scrollTop = initialPosition;
+    // this._popupComponent.getElement().scrollTop = initialPosition;
   }
 
   _handleAlreadyWatchedClick() {
-    const initialPosition = this._popupComponent.getElement().scrollTop;
+    // const initialPosition = this._popupComponent.getElement().scrollTop;
     this._setViewState(PopupState.SENDING);
     const newUserDetails = Object.assign(
       {},
@@ -197,7 +214,7 @@ export default class Film {
 
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
+      this._mode === Mode.DEFAULT ? UpdateType.MINOR : this._mode === Mode.POPUP ? UpdateType.PATCH : '',
       Object.assign(
         {},
         this._film,
@@ -206,11 +223,11 @@ export default class Film {
         },
       ),
     );
-    this._popupComponent.getElement().scrollTop = initialPosition;
+    // this._popupComponent.getElement().scrollTop = initialPosition;
   }
 
   _handleFavoriteClick() {
-    const initialPosition = this._popupComponent.getElement().scrollTop;
+    // const initialPosition = this._popupComponent.getElement().scrollTop;
     this._setViewState(PopupState.SENDING);
     const newUserDetails = Object.assign(
       {},
@@ -222,7 +239,7 @@ export default class Film {
 
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
+      this._mode === Mode.DEFAULT ? UpdateType.MINOR : this._mode === Mode.POPUP ? UpdateType.PATCH : '',
       Object.assign(
         {},
         this._film,
@@ -231,21 +248,21 @@ export default class Film {
         },
       ),
     );
-    this._popupComponent.getElement().scrollTop = initialPosition;
+    // this._popupComponent.getElement().scrollTop = initialPosition;
   }
 
-  _handleCommentSubmit(state) {
+  _handleCommentSubmit(newComment) {
     this._setViewState(PopupState.SENDING);
-    this._film.comments.push(state);
-    this._api.addComment(state.comments[state.comments.length-1])
-      .then((comment) => {
+    this._api.addComment(this._film.id, newComment)
+      .then((response) => {
         this._changeData(
-          UpdateType.PATCH,
+          UserAction.ADD_COMMENT,
+          UpdateType.MINOR,
           Object.assign(
             {},
             this._film,
             {
-              comments: comment.comments,
+              comments: response.newComment,
             },
           ),
         );
@@ -255,10 +272,10 @@ export default class Film {
       });
   }
 
-  _handleCommentDelete(commentId) {
+  _handleCommentDelete(id) {
     const initialPosition = this._popupComponent.getElement().scrollTop;
-    this._setViewState(PopupState.DELETING, commentId);
-    this._api.deleteComment(commentId)
+    this._setViewState(PopupState.DELETING);
+    this._api.deleteComment(id)
       .then(() => {
         this._changeData(
           UserAction.UPDATE_FILM,
@@ -267,8 +284,8 @@ export default class Film {
             {},
             this._film,
             {
-              comments: this._commenstModel.getComments()
-                .filter((comment) => comment.id !== commentId)
+              comments: this._commentsModel.getComments()
+                .filter((comment) => comment.id !== id)
                 .map((comment) => comment.id),
             },
           ),
