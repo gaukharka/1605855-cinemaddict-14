@@ -139,12 +139,12 @@ export default class Film {
     switch(state) {
       case PopupState.SENDING:
         this._popupComponent.updateState({
-          isDisabled: true,
+          isDisabled: false,
         });
         break;
       case PopupState.DELETING:
         this._popupComponent.updateState({
-          isDisabled: true,
+          isDisabled: false,
           deletingCommentId: id,
         });
         break;
@@ -220,10 +220,14 @@ export default class Film {
   }
 
   _handleCommentSubmit(newComment) {
+    const initialPosition = this._popupComponent.getElement().scrollTop;
     this._setViewState(PopupState.SENDING);
     this._api.addComment(this._film.id, newComment)
       .then((response) => {
         this._changeData(
+          this._popupComponent.updateState({
+            comments: response.comments,
+          }),
           UpdateType.MINOR,
           Object.assign(
             {},
@@ -237,6 +241,7 @@ export default class Film {
       .catch(() => {
         this._setViewState(PopupState.ABORTING);
       });
+    this._popupComponent.getElement().scrollTop = initialPosition;
   }
 
   _handleCommentDelete(id) {

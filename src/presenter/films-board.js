@@ -96,25 +96,11 @@ export default class FilmsBoard {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    switch(actionType) {
-      case UserAction.UPDATE_FILM:
-        this._api.updateFilms(update)
-          .then((response) => {
-            this._filmsModel.updateFilm(updateType, response);
-          });
-        break;
-      case UserAction.ADD_COMMENT:
-        this._api.updateFilm(update)
-          .then((response) => {
-            this._filmsModel.updateFilm(updateType, response);
-          });
-        break;
-      case UserAction.DELETE_COMMENT:
-        this._api.updateFilm(update)
-          .then((response) => {
-            this._filmsModel.updateFilm(updateType, response);
-          });
-        break;
+    if (actionType === UserAction.UPDATE_FILM) {
+      this._api.updateFilms(update)
+        .then((response) => {
+          this._filmsModel.updateFilm(updateType, response);
+        });
     }
   }
 

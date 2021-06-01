@@ -252,16 +252,6 @@ export default class Popup extends SmartView {
     this.getElement().querySelector('#favorite').addEventListener('click', this._favoriteClickHandler);
   }
 
-  reset() {
-    this.updateState({
-      comment: '',
-    }, true);
-
-    this.updateState({
-      emotion: '',
-    });
-  }
-
   restoreHandlers() {
     this._setInnerChangeHandlers();
     this.setPopupWatchListClickHandler(this._callback.watchListClick);
@@ -317,7 +307,6 @@ export default class Popup extends SmartView {
 
   _deleteCommentButtonHandler(evt) {
     const initialPosition = this.getElement().scrollTop;
-
     evt.preventDefault();
     const id = evt.target.closest('.film-details__comment-delete').dataset.id;
     const comments = this._state.comments.filter((item) => item.id !== id);
@@ -348,7 +337,6 @@ export default class Popup extends SmartView {
       date: state.date,
     };
 
-    state.comments.push(data);
     return data;
   }
 }
