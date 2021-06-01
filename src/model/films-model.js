@@ -92,7 +92,7 @@ export default class Films extends Observer {
           'description': film.filmInfo.description,
         },
         'user_details': {
-          'watchlist': film.userDetails.watchlist,
+          'watchlist': film.userDetails.watchList,
           'already_watched': film.userDetails.alreadyWatched,
           'favorite': film.userDetails.favorite,
           'watching_date': film.userDetails.watchingDate,

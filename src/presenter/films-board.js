@@ -107,7 +107,13 @@ export default class FilmsBoard {
           });
         break;
       case UserAction.ADD_COMMENT:
-        this._api.updateFilms(update)
+        this._api.updateFilm(update)
+          .then((response) => {
+            this._filmsModel.updateFilm(updateType, response);
+          });
+        break;
+      case UserAction.DELETE_COMMENT:
+        this._api.updateFilm(update)
           .then((response) => {
             this._filmsModel.updateFilm(updateType, response);
           });
@@ -118,9 +124,10 @@ export default class FilmsBoard {
   _handleModelEvent(updateType, data) {
     switch(updateType) {
       case UpdateType.PATCH:
-        this._updateBoard(data);
+        this._filmPresenter[data.id].init(data);
         break;
       case UpdateType.MINOR:
+        this._updateBoard(data);
         this._clearFilmCardBoard();
         this._renderFilmCardBoard();
         break;

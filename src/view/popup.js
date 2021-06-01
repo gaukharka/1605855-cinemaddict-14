@@ -163,8 +163,6 @@ export default class Popup extends SmartView {
       },
     );
 
-    console.log(this._state)
-
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
     this._watchListClickHandler = this._watchListClickHandler.bind(this);
     this._alreadyWatchedClickHandler = this._alreadyWatchedClickHandler.bind(this);
@@ -219,6 +217,7 @@ export default class Popup extends SmartView {
   setPopupFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector('#favorite').addEventListener('click', this._favoriteClickHandler);
+    alert('popup clicked')
   }
 
   reset() {
@@ -265,7 +264,6 @@ export default class Popup extends SmartView {
     this.getElement().querySelector('.film-details__emoji-list').addEventListener('change', this._emojiSelectHandler);
   }
 
-  // comment submit
   _enterKeyDownHandler(evt) {
     const initialPosition = this.getElement().scrollTop;
     if(isEnterEvent(evt)) {
@@ -285,7 +283,6 @@ export default class Popup extends SmartView {
     this.getElement().scrollTop = initialPosition;
   }
 
-  //comment delete
   _deleteCommentButtonHandler(evt) {
     const initialPosition = this.getElement().scrollTop;
 
@@ -315,9 +312,11 @@ export default class Popup extends SmartView {
     const data = {
       comment: state.comment,
       emotion: state.emotion,
+      author: state.author,
+      date: state.date,
     };
 
     state.comments.push(data);
-    return state;
+    return data;
   }
 }
