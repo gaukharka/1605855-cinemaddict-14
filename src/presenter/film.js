@@ -2,6 +2,8 @@ import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
 import {remove, render, replace} from '../utils/render.js';
 import {isEscEvent} from '../utils/film.js';
+import {isOnline} from '../utils/common.js';
+import {toast} from '../utils/toast.js';
 import {UserAction, UpdateType, PopupState} from '../const.js';
 
 const Mode = {
@@ -221,6 +223,12 @@ export default class Film {
 
   _handleCommentSubmit(newComment) {
     const initialPosition = this._popupComponent.getElement().scrollTop;
+
+    if (!isOnline()) {
+      toast('You can\'t send comment when offline');
+      return;
+    }
+
     this._setViewState(PopupState.SENDING);
     this._api.addComment(this._film.id, newComment)
       .then((response) => {
@@ -246,6 +254,12 @@ export default class Film {
 
   _handleCommentDelete(id) {
     const initialPosition = this._popupComponent.getElement().scrollTop;
+
+    if (!isOnline()) {
+      toast('You can\'t delete comment when offline');
+      return;
+    }
+
     this._setViewState(PopupState.DELETING);
     this._api.deleteComment(id)
       .then(() => {
