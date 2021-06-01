@@ -101,6 +101,7 @@ export default class Film {
   }
 
   _closePopup() {
+    this._changeData(UserAction.UPDATE_FILM, UpdateType.MINOR, this._film);
     remove(this._popupComponent);
     this._mode = Mode.DEFAULT;
   }
@@ -123,7 +124,6 @@ export default class Film {
   _handlePopupCloseClick() {
     this._closePopup();
     document.body.classList.remove('hide-overflow');
-    this._commentsModel.removeObserver(this._handleModelEvent);
     document.removeEventListener('keydown', this._escKeyDownHandler);
     document.removeEventListener('keydown', this._enterKeyDownHandler);
   }
@@ -164,7 +164,7 @@ export default class Film {
     );
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -186,7 +186,7 @@ export default class Film {
 
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -208,7 +208,7 @@ export default class Film {
 
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,

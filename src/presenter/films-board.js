@@ -47,9 +47,6 @@ export default class FilmsBoard {
   }
 
   init() {
-    render(this._mainElement, this._allFilmsComponent, 'beforeend');
-    render(this._allFilmsComponent, this._filmListMainComponent, 'beforeend');
-
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
     this._commentsModel.addObserver(this._handleModelEvent);
@@ -160,7 +157,7 @@ export default class FilmsBoard {
 
     this._filmSortingComponent = new FilmSortingView(this._currentSortType);
     this._filmSortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
-    render(this._mainElement, this._filmSortingComponent, 'afterbegin');
+    render(this._mainElement, this._filmSortingComponent, 'beforeend');
   }
 
   _renderFilmCard(container, film) {
@@ -265,6 +262,8 @@ export default class FilmsBoard {
     }
 
     this._renderSort();
+    render(this._mainElement, this._allFilmsComponent, 'beforeend');
+    render(this._allFilmsComponent, this._filmListMainComponent, 'beforeend');
     this._renderExtraFilms(films);
     this._renderFilmCards(films.slice(0, Math.min(filmsCount, this._displayedFilms)));
 

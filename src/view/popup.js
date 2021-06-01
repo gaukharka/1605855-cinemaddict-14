@@ -190,8 +190,19 @@ export default class Popup extends SmartView {
   }
 
   _watchListClickHandler(evt) {
+    const initialPosition = this.getElement().scrollTop;
     evt.preventDefault();
+
+    this.updateState({
+      userDetails: Object.assign(
+        {},
+        this._state.userDetails,
+        {watchList: !this._state.userDetails.watchList},
+      ),
+    });
     this._callback.watchListClick();
+
+    this.getElement().scrollTop = initialPosition;
   }
 
   setPopupWatchListClickHandler(callback) {
@@ -200,8 +211,19 @@ export default class Popup extends SmartView {
   }
 
   _alreadyWatchedClickHandler(evt) {
+    const initialPosition = this.getElement().scrollTop;
     evt.preventDefault();
+
+    this.updateState({
+      userDetails: Object.assign(
+        {},
+        this._state.userDetails,
+        {alreadyWatched: !this._state.userDetails.alreadyWatched},
+      ),
+    });
     this._callback.alreadyWatchedClick();
+
+    this.getElement().scrollTop = initialPosition;
   }
 
   setPopupAlreadyWatchedClickHandler(callback) {
@@ -210,14 +232,24 @@ export default class Popup extends SmartView {
   }
 
   _favoriteClickHandler(evt) {
+    const initialPosition = this.getElement().scrollTop;
     evt.preventDefault();
+
+    this.updateState({
+      userDetails: Object.assign(
+        {},
+        this._state.userDetails,
+        {favorite: !this._state.userDetails.favorite},
+      ),
+    });
     this._callback.favoriteClick();
+
+    this.getElement().scrollTop = initialPosition;
   }
 
   setPopupFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector('#favorite').addEventListener('click', this._favoriteClickHandler);
-    alert('popup clicked')
   }
 
   reset() {

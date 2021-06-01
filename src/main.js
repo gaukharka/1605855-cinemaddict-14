@@ -41,8 +41,6 @@ const handleSiteMenuClick = (menuItem) => {
   }
 };
 
-render(headerElement, new UserRankView(filmsModel.getFilms()), 'beforeend');
-render(footerElement, new FooterStatsView(filmsModel.getFilms().length), 'beforeend');
 
 const filmsCardsBoardPresenter = new FilmCardsBoardPresenter(bodyElement, mainElement, filmsModel, filterModel, commentsModel, api);
 const filterPresenter = new FilterPresenter(mainElement, filterModel, filmsModel, handleSiteMenuClick);
@@ -53,6 +51,8 @@ filmsCardsBoardPresenter.init();
 api.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
+    render(headerElement, new UserRankView(filmsModel.getFilms()), 'beforeend');
+    render(footerElement, new FooterStatsView(filmsModel.getFilms().length), 'beforeend');
   })
   .catch(() => {
     filmsModel.setFilms(UpdateType.INIT, []);
