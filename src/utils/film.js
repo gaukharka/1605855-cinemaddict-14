@@ -8,7 +8,6 @@ export const generateDuration = (duration) => {
 export const generateReleaseYear = (date) => {
   const newDate = new Date(date);
   const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(newDate);
-
   return `${year}`;
 };
 

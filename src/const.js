@@ -4,6 +4,13 @@ export const SortType = {
   BY_RATING: 'by-rating',
 };
 
+export const Emoji = {
+  SMILE: 'smile',
+  SLEEPING: 'sleeping',
+  PUKE: 'puke',
+  ANGRY: 'angry',
+};
+
 export const UserAction = {
   UPDATE_FILM: 'UPDATE_FILM',
   ADD_COMMENT: 'ADD_COMMENT',
@@ -14,6 +21,7 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 export const FilterType = {
@@ -34,4 +42,10 @@ export const StatsFilter = {
   WEEK: 'week',
   MONTH: 'month',
   YEAR: 'year',
+};
+
+export const PopupState = {
+  SENDING: 'Sending',
+  DELETING: 'Deleting',
+  ABORTING: 'Aborting',
 };

@@ -3,8 +3,8 @@ import {render, replace, remove} from '../utils/render.js';
 import {filter} from '../utils/filters.js';
 import {FilterType, MenuItem, UpdateType} from '../const.js';
 export default class Filter {
-  constructor(mainContainer, filterModel, filmsModel, selectMenuType) {
-    this.mainContainer = mainContainer;
+  constructor(mainElement, filterModel, filmsModel, selectMenuType) {
+    this._mainElement = mainElement;
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
     this._selectMenuType = selectMenuType;
@@ -29,7 +29,7 @@ export default class Filter {
     this._filterComponent.setStatsClickHandler(this._handleStatClick);
 
     if (!prevFilterComponent) {
-      render(this.mainContainer, this._filterComponent, 'beforeend');
+      render(this._mainElement, this._filterComponent, 'beforeend');
       return;
     }
 
