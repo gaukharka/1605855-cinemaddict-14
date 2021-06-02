@@ -1,6 +1,6 @@
 import SmartView from './smart.js';
 import {generateHour, generateMinutes, makeItemsUniq} from '../utils/stats.js';
-import {generateUserRank} from '../mock/rank.js';
+import {generateUserRank} from '../utils/rank.js';
 import {StatsFilter} from '../const.js';
 import dayjs from 'dayjs';
 import Chart from 'chart.js';

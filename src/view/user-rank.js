@@ -1,5 +1,5 @@
 import AbstractView from './abstract.js';
-import {generateUserRank} from '../mock/rank.js';
+import {generateUserRank} from '../utils/rank.js';
 
 const createUserRankTemplate = (userRank) => {
 
